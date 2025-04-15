@@ -1,6 +1,11 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, User, Product, CartItem
+<<<<<<< HEAD
+=======
+from flask_sqlalchemy import SQLAlchemy
+
+>>>>>>> 758c12cd3f94dd7a46efd18a62d4aef4ee798713
 
 cart_bp = Blueprint('cart', __name__)
 
@@ -109,4 +114,8 @@ def clear_cart():
     CartItem.query.filter_by(user_id=user_id).delete()
     db.session.commit()
     
+<<<<<<< HEAD
     return jsonify({'message': 'Cart cleared successfully'})
+=======
+    return jsonify({'message': 'Cart cleared successfully'})
+>>>>>>> 758c12cd3f94dd7a46efd18a62d4aef4ee798713
