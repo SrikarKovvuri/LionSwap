@@ -12,6 +12,7 @@ class User(db.Model):
 
     products = db.relationship('Product', backref='seller', lazy=True)
     reviews = db.relationship('Review', backref='author', lazy=True)
+    cart_items = db.relationship('CartItem', backref='user', lazy=True, cascade="all, delete-orphan")
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,7 +43,24 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     buyer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
     ordered_at = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(50), default='Pending')
 
     buyer = db.relationship('User', backref='orders', foreign_keys=[buyer_id])
+
+class CartItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False, default=1)
+    added_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    user = db.relationship('User', backref=db.backref('cart_items', lazy=True))
+    product = db.relationship('Product')
+    
+    @property
+    def subtotal(self):
+        return self.quantity * self.product.price
+    
