@@ -43,7 +43,6 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     buyer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
     ordered_at = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(50), default='Pending')
 
@@ -53,7 +52,6 @@ class CartItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False, default=1)
     added_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
@@ -62,5 +60,5 @@ class CartItem(db.Model):
     
     @property
     def subtotal(self):
-        return self.quantity * self.product.price
+        return self.product.price
     
