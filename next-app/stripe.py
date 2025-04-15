@@ -1,11 +1,11 @@
 from flask import Blueprint, jsonify, request
 from models import User, db
-
+import stripe
 stripe_bp = Blueprint('stripe', __name__)
 
 
 def create_checkout_session():
-   
+
     try:
         data = request.get_json()
         amount = data.get("amount")                  
@@ -43,3 +43,28 @@ def create_checkout_session():
     except Exception as e:
         print("Error creating Checkout Session:", e)
         return jsonify({"error": str(e)}), 400
+
+def stripe_webhook():
+    payload = request.data
+    sig_header = request.headers.get("stripe-signature")
+    webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
+    except stripe.error.SignatureVerificationError:
+        return "Invalid signature", 400
+
+    # Process relevant events.
+    if event["type"] == "payment_intent.succeeded":
+        print("Payment succeeded")
+        # Update your order status here.
+    elif event["type"] == "charge.refunded":
+        print("Charge was refunded")
+        # Update your refund records.
+    # Handle other event types as needed.
+
+    return "ok", 200
+
+
+
+
