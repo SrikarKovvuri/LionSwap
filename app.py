@@ -19,7 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = os.getenv("SECRET_KEY")
 
-db.init_app()
+db.init_app(app)
 migrate = Migrate(app, db)
 jwt = JWTManager(app)
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
