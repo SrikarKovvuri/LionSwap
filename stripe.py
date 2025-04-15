@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from models import User, db
 import stripe
+
 stripe_bp = Blueprint('stripe', __name__)
 
 

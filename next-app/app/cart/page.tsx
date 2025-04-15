@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import axios from "axios";
 
 export default function ShoppingCart() {
   const [cartItems, setCartItems] = useState([
@@ -21,16 +22,33 @@ export default function ShoppingCart() {
     }
   ]);
 
-  const removeFromCart = (itemId: number) => {
+  const removeFromCart = async (itemId: number) => {
     setCartItems(cartItems.filter(item => item.id !== itemId));
+    try {
+        const response = await axios.post("http://localhost:8000/remove", 
+            { item_id: itemId },
+        );
+        console.log("Response:", response);
+    } catch (error) {
+        console.error("Error w/ Cart API removeFromCart", error);
+    }
   };
 
-  const updateQuantity = (itemId: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
+  const updateQuantity = async (itemId: number, newQuantity: number) => {
+    if (newQuantity < 1) return 1;
     
     setCartItems(cartItems.map(item => 
       item.id === itemId ? {...item, quantity: newQuantity} : item
     ));
+
+    try {
+        const response = await axios.post("http://localhost:8000/update", 
+            { item_id: itemId, quantity: newQuantity}
+        );
+        console.log("Response:", response);
+    } catch (error) {
+        console.error("Error w/ Cart API updateQuantity", error);
+    }
   };
 
   const calculateTotal = () => {
@@ -120,8 +138,8 @@ export default function ShoppingCart() {
                 <span>${calculateTotal()}</span>
               </div>
               <div className="flex justify-between mb-4">
-                <span>Columbia Student Discount</span>
-                <span>-$0.00</span>
+                <span>Buyer Protection Fee</span>
+                <span>+$0.00</span>
               </div>
               <div className="border-t pt-4 flex justify-between font-bold text-lg">
                 <span>Total</span>
