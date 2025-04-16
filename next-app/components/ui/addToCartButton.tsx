@@ -18,6 +18,11 @@ export default function AddToCartButton({ itemId, itemName, itemPrice, itemImage
             const response = await axios.post("http://localhost:5000/add", 
                 { item_id: itemId, item_name: itemName, item_price: itemPrice, item_image: itemImage },
             );
+            if(response.status == 201) {
+              const token = response.data.token;
+              localStorage.setItem("token", token);
+              alert("Sucessfully added to cart");
+            }
             console.log("Response:", response);
         } catch (error) {
             console.error("Error w/ Cart API addToCart", error);
