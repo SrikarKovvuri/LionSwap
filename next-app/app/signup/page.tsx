@@ -10,8 +10,7 @@ export default function SignUp() {
     event.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/signup`,
+      const response = await axios.post('http://localhost5000/signup',
         {
           username,
           password,

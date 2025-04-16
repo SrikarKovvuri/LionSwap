@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; 
+import Link from "next/link"
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -85,7 +85,7 @@ export default function Login() {
         </form>
 
         <p className="auth-switch">
-          Don't have an account? <Link to="/signup">Sign up</Link>
+          Don't have an account? <Link href="/signup">Sign up</Link>
         </p>
       </div>
     </div>

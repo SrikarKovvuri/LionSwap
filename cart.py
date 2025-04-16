@@ -64,7 +64,7 @@ def add_to_cart():
         db.session.add(cart_item)
     
     db.session.commit()
-    return jsonify({'message': 'Item added to cart successfully'}), 200
+    return jsonify({'message': 'Item added to cart successfully'}), 201
 
 
 
@@ -82,7 +82,7 @@ def remove_from_cart(item_id):
     db.session.delete(cart_item)
     db.session.commit()
     
-    return jsonify({'message': 'Item removed from cart'}), 200
+    return jsonify({'message': 'Item removed from cart'}), 201
 
 
 

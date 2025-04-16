@@ -50,12 +50,12 @@ export default function Header() {
               <ShoppingCart className="h-5 w-5" />
             </Button>
           </Link>
-          <Link href="/auth/login">
+          <Link href="/login">
             <Button variant="ghost" size="sm">
               Log in
             </Button>
           </Link>
-          <Link href="/auth/signup">
+          <Link href="/signup">
             <Button variant="ghost" size="sm">
               Sign up
             </Button>
