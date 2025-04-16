@@ -10,14 +10,12 @@ export default function ShoppingCart() {
       id: 1,
       name: "Introduction to Economics Textbook",
       price: 45.00,
-      quantity: 1,
       image: "/placeholder.svg"
     },
     {
       id: 2,
       name: "Calculus Early Transcendentals",
       price: 50.00,
-      quantity: 1,
       image: "/placeholder.svg"
     }
   ]);
@@ -25,7 +23,7 @@ export default function ShoppingCart() {
   const removeFromCart = async (itemId: number) => {
     setCartItems(cartItems.filter(item => item.id !== itemId));
     try {
-        const response = await axios.post("http://localhost:8000/remove", 
+        const response = await axios.post("http://localhost:5000/remove", 
             { item_id: itemId },
         );
         console.log("Response:", response);
@@ -34,25 +32,8 @@ export default function ShoppingCart() {
     }
   };
 
-  const updateQuantity = async (itemId: number, newQuantity: number) => {
-    if (newQuantity < 1) return 1;
-    
-    setCartItems(cartItems.map(item => 
-      item.id === itemId ? {...item, quantity: newQuantity} : item
-    ));
-
-    try {
-        const response = await axios.post("http://localhost:8000/update", 
-            { item_id: itemId, quantity: newQuantity}
-        );
-        console.log("Response:", response);
-    } catch (error) {
-        console.error("Error w/ Cart API updateQuantity", error);
-    }
-  };
-
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+    return cartItems.reduce((total, item) => total + (item.price), 0).toFixed(2);
   };
 
   return (
@@ -73,9 +54,8 @@ export default function ShoppingCart() {
             <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
               <div className="hidden md:grid grid-cols-12 gap-4 p-4 border-b bg-gray-50 font-medium">
                 <div className="col-span-6">Item</div>
-                <div className="col-span-2 text-center">Price</div>
-                <div className="col-span-2 text-center">Quantity</div>
-                <div className="col-span-2 text-center">Subtotal</div>
+                <div className="col-span-3 text-center">Price</div>
+                <div className="col-span-3 text-center">Subtotal</div>
               </div>
 
               {cartItems.map((item) => (
@@ -100,33 +80,14 @@ export default function ShoppingCart() {
                     </div>
                   </div>
                   
-                  <div className="col-span-2 text-center">
+                  <div className="col-span-3 text-center">
                     <span className="md:hidden font-medium mr-2">Price:</span>
                     ${item.price.toFixed(2)}
                   </div>
                   
-                  <div className="col-span-2 text-center flex items-center justify-center">
-                    <span className="md:hidden font-medium mr-2">Quantity:</span>
-                    <div className="flex items-center border rounded-md">
-                      <button 
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="px-2 py-1 border-r"
-                      >
-                        -
-                      </button>
-                      <span className="px-4">{item.quantity}</span>
-                      <button 
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="px-2 py-1 border-l"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div className="col-span-2 text-center font-medium">
+                  <div className="col-span-3 text-center font-medium">
                     <span className="md:hidden font-medium mr-2">Subtotal:</span>
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ${(item.price).toFixed(2)}
                   </div>
                 </div>
               ))}

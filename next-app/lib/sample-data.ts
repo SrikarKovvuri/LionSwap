@@ -39,7 +39,7 @@ export const users: User[] = [
 
 export const products: Product[] = [
   {
-    id: "prod1",
+    id: 1,
     name: "Introduction to Economics Textbook",
     price: 45.0,
     description: "Used textbook for ECON1001. Some highlighting but in good condition. 10th edition.",
@@ -53,7 +53,7 @@ export const products: Product[] = [
     },
   },
   {
-    id: "prod2",
+    id: 2,
     name: "MacBook Air 2021",
     price: 750.0,
     description: "M1 MacBook Air, 8GB RAM, 256GB SSD. Includes charger and protective case.",
@@ -67,7 +67,7 @@ export const products: Product[] = [
     },
   },
   {
-    id: "prod3",
+    id: 3,
     name: "Columbia University Hoodie",
     price: 25.0,
     description: "Official Columbia University hoodie, size medium. Worn a few times but still in great condition.",
@@ -81,7 +81,7 @@ export const products: Product[] = [
     },
   },
   {
-    id: "prod4",
+    id: 4,
     name: "Desk Lamp",
     price: 15.0,
     description: "Adjustable desk lamp, perfect for dorm rooms. LED bulb included.",
@@ -95,7 +95,7 @@ export const products: Product[] = [
     },
   },
   {
-    id: "prod5",
+    id: 5,
     name: "Calculus Early Transcendentals",
     price: 50.0,
     description: "8th edition, James Stewart. Used for MATH1101. Minor wear on cover.",
@@ -109,7 +109,7 @@ export const products: Product[] = [
     },
   },
   {
-    id: "prod6",
+    id: 6,
     name: "Wireless Headphones",
     price: 80.0,
     description: "Sony WH-1000XM3 Noise Cancelling Headphones. Great condition with carrying case.",
@@ -123,7 +123,7 @@ export const products: Product[] = [
     },
   },
   {
-    id: "prod7",
+    id: 7,
     name: "Columbia Lions Basketball Jersey",
     price: 35.0,
     description: "Official Columbia Lions basketball jersey, size large. Like new condition.",
@@ -137,7 +137,7 @@ export const products: Product[] = [
     },
   },
   {
-    id: "prod8",
+    id: 8,
     name: "Mini Refrigerator",
     price: 65.0,
     description: "Compact refrigerator, perfect for dorm rooms. 2.7 cubic feet with freezer compartment.",

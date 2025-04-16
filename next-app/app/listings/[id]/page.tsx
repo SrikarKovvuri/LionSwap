@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Heart, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import AddToCartButton from "@/components/ui/addToCartButton"
 import { products } from "@/lib/sample-data"
 import { notFound } from "next/navigation"
 import ProductGrid from "@/components/product-grid"
@@ -13,11 +14,31 @@ interface ProductPageProps {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const product = products.find((p) => p.id === params.id)
+  // const [itemProperties, setItemProperties] = useState([
+  //   {
+  //     id: 0,
+  //     name: "",
+  //     price: 0.00,
+  //     image: ""
+  //   },
+  // ]);
+
+  const product = products.find((p) => p.id === Number(params.id))
 
   if (!product) {
     notFound()
   }
+
+  // useEffect(() => {
+  //   if (product) {
+  //     setItemProperties([{
+  //       id: product.id,
+  //       name: product.name,
+  //       price: product.price,
+  //       image: product.imageUrl,
+  //     }]);
+  //   }
+  // }, [product]);
 
   const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4)
 
@@ -55,7 +76,7 @@ export default function ProductPage({ params }: ProductPageProps) {
             <p className="text-sm text-gray-500 mb-6">+$0.69 Buyer Protection fee</p>
 
             <div className="flex gap-4 mb-6">
-              <Button className="flex-1">Add to cart</Button>
+              <AddToCartButton itemId={product.id} itemName={product.name} itemPrice={product.price} itemImage={product.imageUrl}>Add to cart</AddToCartButton>
               <Button variant="outline" className="flex-1">
                 Make offer
               </Button>
