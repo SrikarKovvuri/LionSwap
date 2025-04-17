@@ -8,10 +8,13 @@ auth_bp = Blueprint('auth', __name__)
 CORS(auth_bp, supports_credentials=True) 
 @auth_bp.route('/login', methods = ['POST', 'OPTIONS'])
 def login():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+    
     username = request.json.get("username")
     password = request.json.get("password")
 
-    if not username or password:
+    if not username or not password:
         return jsonify({"error": "Username and Password are required"}), 400
     
     user = User.query.filter_by(username = username).first()
