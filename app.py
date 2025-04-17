@@ -1,3 +1,4 @@
+
 from dotenv import load_dotenv
 import os
 from flask_sqlalchemy import SQLAlchemy
@@ -13,12 +14,14 @@ from auth import auth_bp
 load_dotenv()
 
 app = Flask(__name__)
+
 CORS(app, supports_credentials=True)  # apply CORS globally
 
 database_uri = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = os.getenv("SECRET_KEY")
+
 
 db.init_app(app)
 migrate = Migrate(app, db)

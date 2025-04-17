@@ -34,7 +34,7 @@ def signup():
     username = request.json.get("username")
     password = request.json.get("password")
 
-    if not username or password:
+    if not username or not password:
         return jsonify({"error": "Username and Password are required"})
     
     if User.query.filter_by(username = username).first():
