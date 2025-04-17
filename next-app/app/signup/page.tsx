@@ -10,7 +10,7 @@ export default function SignUp() {
     event.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost5000/signup',
+      const response = await axios.post('http://localhost:5000/signup',
         {
           username,
           password,
