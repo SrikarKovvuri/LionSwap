@@ -1,5 +1,4 @@
 "use client"
-
 import Link from "next/link"
 import Image from "next/image"
 import { Heart } from "lucide-react"
@@ -24,7 +23,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
-            <Button
+            {/* <Button
               variant="ghost"
               size="icon"
               className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white/80 hover:bg-white"
@@ -35,7 +34,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
             >
               <Heart className="h-4 w-4" />
               <span className="sr-only">Add to favorites</span>
-            </Button>
+            </Button> */}
           </Link>
           <div className="p-3">
             <Link href={`/listings/${product.id}`} className="block">
