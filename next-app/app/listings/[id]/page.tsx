@@ -84,13 +84,13 @@ export default function ProductPage({ params }: ProductPageProps) {
 
             <Button className="w-full mb-2 bg-blue-600 hover:bg-blue-700">Buy now</Button>
 
-            <div className="text-center text-sm text-gray-500 mb-6">or</div>
+            {/* <div className="text-center text-sm text-gray-500 mb-6">or</div>
 
             <Button variant="outline" className="w-full mb-6">
               <Image src="/placeholder.svg?height=20&width=80" alt="PayPal" width={80} height={20} />
-            </Button>
+            </Button> */}
 
-            <div className="flex justify-between items-center">
+            {/* <div className="flex justify-between items-center">
               <Button variant="ghost" size="sm" className="flex items-center gap-2">
                 <Heart className="h-5 w-5" />
                 <span>0 Likes</span>
@@ -100,7 +100,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 <Share2 className="h-5 w-5" />
                 <span>Share</span>
               </Button>
-            </div>
+            </div> */}
           </div>
 
           <div className="border-t pt-6">

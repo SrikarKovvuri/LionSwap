@@ -51,9 +51,9 @@ export default function ProfilePage({ params }: ProfilePageProps) {
             </div>
           </div>
           <Button className="w-full mb-2">Message</Button>
-          <Button variant="outline" className="w-full">
+          {/* <Button variant="outline" className="w-full">
             Follow
-          </Button>
+          </Button> */}
         </div>
 
         <div className="md:w-2/3">
