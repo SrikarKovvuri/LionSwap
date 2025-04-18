@@ -1,12 +1,11 @@
-"use client";
+"use client"
 import React, { useState } from "react";
 import axios from "axios";
-import Link from "next/link"
+import Link from "next/link";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
 
   const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -18,7 +17,6 @@ export default function Login() {
 
   const handleData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const data = {
       username,
       password,
@@ -39,55 +37,75 @@ export default function Login() {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-container">
-        <div className="login-header">
-          <h2>Welcome Back</h2>
-          <p>Please log in to continue</p>
+    <div className="container mx-auto px-4 py-8 max-w-lg">
+      <main>
+        <div className="bg-white rounded-lg shadow p-8">
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
+            <p className="text-gray-600">Please log in to continue</p>
+          </div>
+
+          <form onSubmit={handleData}>
+            <div className="mb-4">
+              <label 
+                htmlFor="username" 
+                className="block text-sm font-medium mb-2"
+              >
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={username}
+                onChange={handleUsername}
+                required
+                minLength={6}
+                maxLength={10}
+                placeholder="Enter your username"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label 
+                htmlFor="password" 
+                className="block text-sm font-medium mb-2"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={password}
+                onChange={handlePassword}
+                required
+                minLength={6}
+                maxLength={10}
+                placeholder="Enter your password"
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              className="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
+            >
+              Login
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don't have an account? {" "}
+              <Link href="/signup">
+                <span className="text-blue-600 hover:underline font-medium">
+                  Sign up
+                </span>
+              </Link>
+            </p>
+          </div>
         </div>
-
-        <form onSubmit={handleData}>
-          <div className="form-group">
-            <label htmlFor="username" className="form-label">
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              className="form-input"
-              value={username}
-              onChange={handleUsername}
-              required
-              minLength={6}
-              maxLength={10}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              className="form-input"
-              value={password}
-              onChange={handlePassword}
-              required
-              minLength={6}
-              maxLength={10}
-            />
-          </div>
-
-          <button type="submit" className="login-button">
-            Login
-          </button>
-        </form>
-
-        <p className="auth-switch">
-          Don't have an account? <Link href="/signup">Sign up</Link>
-        </p>
-      </div>
+      </main>
     </div>
   );
 }
