@@ -23,8 +23,15 @@ export default function ShoppingCart() {
   const removeFromCart = async (itemId: number) => {
     setCartItems(cartItems.filter(item => item.id !== itemId));
     try {
+        const token = localStorage.getItem("token");
         const response = await axios.post("http://localhost:5000/remove", 
             { item_id: itemId },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "applications/json"
+              }
+            }
         );
         console.log("Response:", response);
     } catch (error) {

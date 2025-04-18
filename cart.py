@@ -11,6 +11,9 @@ cart_bp = Blueprint('cart', __name__)
 @cart_bp.route('/cart', methods=['GET'])
 @jwt_required()
 def get_cart():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+    
     user_id = get_jwt_identity()
     cart_items = CartItem.query.filter_by(user_id=user_id).all()
     
@@ -38,9 +41,12 @@ def get_cart():
 
 
 
-@cart_bp.route('/cart/add/<int:item_id>', methods=['POST'])
+@cart_bp.route('/cart/add', methods=['POST'])
 @jwt_required()
 def add_to_cart():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+    
     user_id = get_jwt_identity()
     data = request.get_json()
     
@@ -50,8 +56,8 @@ def add_to_cart():
     product_image = data.get('item_image')
 
     
-    # Check if product exists
-    product = Product.query.get(product_id)
+    # Check if product exists in our database 
+    product = Product.query.get(product_id) #       COME BACK TO THIS AFTER YOU MAKE LISTING POST REQUESTS WORK (adding new listings to the database)
     if not product or not product.is_available:
         return jsonify({'error': 'Product not available'}), 400
     
@@ -60,17 +66,20 @@ def add_to_cart():
     
     if not cart_item:
         # if not already in cart, add new item to cart
-        cart_item = CartItem(user_id=user_id, title=product_name, product_id=product_id, price=product_price, image=product_image, added_at=datetime.utcnow)
+        cart_item = CartItem(user_id=user_id, title=product_name, product_id=product_id, price=product_price, image=product_image, added_at=datetime.utcnow())
         db.session.add(cart_item)
     
     db.session.commit()
-    return jsonify({'message': 'Item added to cart successfully'}), 201
+    return jsonify({'message': 'Item added to cart successfully'}), 200
 
 
 
-@cart_bp.route('/cart/remove/<int:item_id>', methods=['DELETE'])
+@cart_bp.route('/cart/remove', methods=['DELETE'])
 @jwt_required()
 def remove_from_cart(item_id):
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+
     user_id = get_jwt_identity()
     
     # Find and remove the cart item
@@ -82,17 +91,20 @@ def remove_from_cart(item_id):
     db.session.delete(cart_item)
     db.session.commit()
     
-    return jsonify({'message': 'Item removed from cart'}), 201
+    return jsonify({'message': 'Item removed from cart'}), 200
 
 
 
 @cart_bp.route('/cart/clear', methods=['DELETE'])
 @jwt_required()
 def clear_cart():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+    
     user_id = get_jwt_identity()
     
     # Delete all cart items for the user
     CartItem.query.filter_by(user_id=user_id).delete()
     db.session.commit()
     
-    return jsonify({'message': 'Cart cleared successfully'})
+    return jsonify({'message': 'Cart cleared successfully'}), 200

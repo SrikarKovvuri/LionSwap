@@ -10,6 +10,7 @@ from models import db
 from flask_migrate import Migrate
 from stripe import stripe_bp
 from auth import auth_bp
+from cart import cart_bp
 
 load_dotenv()
 
@@ -31,6 +32,7 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
 app.register_blueprint(stripe_bp, url_prefix = "/stripe")
 app.register_blueprint(market_ops)
 app.register_blueprint(auth_bp)
+app.register_blueprint(cart_bp)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

@@ -15,10 +15,17 @@ export default function AddToCartButton({ itemId, itemName, itemPrice, itemImage
 
     const addToCart = async (itemId: number, itemName: string, itemPrice: number, itemImage: string) => {
         try {
-            const response = await axios.post("http://localhost:5000/add", 
+          const token = localStorage.getItem("token")  
+          const response = await axios.post("http://localhost:5000/cart/add", 
                 { item_id: itemId, item_name: itemName, item_price: itemPrice, item_image: itemImage },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                  }
+                }
             );
-            if(response.status == 201) {
+            if(response.status == 200) {
               const token = response.data.token;
               localStorage.setItem("token", token);
               alert("Sucessfully added to cart");
