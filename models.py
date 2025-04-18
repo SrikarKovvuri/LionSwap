@@ -30,21 +30,23 @@ class Product(db.Model):
     image_url   = db.Column(db.String(250))
     posted_at   = db.Column(db.DateTime, default=datetime.utcnow)
     is_available = db.Column(db.Boolean, default=True)
+    category = db.Column(db.String(30), nullable = False)
 
     seller_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    seller_username = db.Column(db.String(80),  unique=True, nullable=False)
 
     reviews = db.relationship("Review", backref="product", lazy=True)
     orders  = db.relationship("Order",  backref="product", lazy=True)
 
-class Review(db.Model):
-    __tablename__ = "review"
-    id        = db.Column(db.Integer, primary_key=True)
-    content   = db.Column(db.Text, nullable=False)
-    rating    = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+# class Review(db.Model):
+#     __tablename__ = "review"
+#     id        = db.Column(db.Integer, primary_key=True)
+#     content   = db.Column(db.Text, nullable=False)
+#     rating    = db.Column(db.Integer, nullable=False)
+#     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
-    author_id  = db.Column(db.Integer, db.ForeignKey("user.id"),    nullable=False)
+#     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
+#     author_id  = db.Column(db.Integer, db.ForeignKey("user.id"),    nullable=False)
 
 class Order(db.Model):
     __tablename__ = "order"
@@ -55,6 +57,20 @@ class Order(db.Model):
     status     = db.Column(db.String(50), default="Pending")
 
     buyer = db.relationship("User", backref="orders", foreign_keys=[buyer_id])
+
+class Notification(db.Model):
+    __tablename__ = "notification"
+    id         = db.Column(db.Integer, primary_key=True)
+    user_id    = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    type       = db.Column(db.String(30), nullable=False)
+    title      = db.Column(db.String(100), nullable=False)
+    message    = db.Column(db.Text, nullable=False)
+    timestamp  = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    read       = db.Column(db.Boolean, nullable=False)
+    action_url = db.Column(db.String(250))
+    sender_id  = db.Column(db.Integer)
+    product_id = db.Column(db.Integer)
+    image_url  = db.Column(db.String(250))
 
 class CartItem(db.Model):
     __tablename__ = "cart_item"

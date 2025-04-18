@@ -106,6 +106,13 @@ function NotificationCard({ notification }: { notification: Notification }) {
     }
   };
 
+  // Get the sender avatar URL - assuming you have a function or mapping to get avatars by user ID
+  const getSenderAvatar = (senderId: number) => {
+    // You might want to implement a proper lookup function here
+    // For now, we'll just return a placeholder with the user ID
+    return `/placeholder.svg?height=40&width=40&text=User${senderId}`;
+  };
+
   return (
     <Link href={notification.actionUrl || "#"}>
       <div className={`p-4 rounded-lg border ${notification.read ? 'bg-white' : 'bg-blue-50'} hover:bg-gray-50 transition-colors`}>
@@ -115,8 +122,8 @@ function NotificationCard({ notification }: { notification: Notification }) {
             {notification.senderId ? (
               <div className="h-10 w-10 rounded-full overflow-hidden">
                 <Image
-                  src={notification.senderId} // NEEDS FIXING
-                  alt={notification.senderId}
+                  src={getSenderAvatar(notification.senderId)} // Now using a function to get avatar by ID
+                  alt={`User ${notification.senderId}`}
                   width={40}
                   height={40}
                   className="object-cover"
@@ -141,7 +148,7 @@ function NotificationCard({ notification }: { notification: Notification }) {
                 {notification.title}
               </h3>
               <span className="text-xs text-gray-500">
-                {formatDistanceToNow(notification.timestamp, { addSuffix: true })}
+                {formatDistanceToNow(new Date(notification.timestamp), { addSuffix: true })}
               </span>
             </div>
             <p className="text-gray-600 text-sm mt-1">{notification.message}</p>
@@ -158,7 +165,9 @@ function NotificationCard({ notification }: { notification: Notification }) {
                     className="object-cover"
                   />
                 </div>
-                <span className="text-sm text-gray-700">{notification.title}</span>
+                <span className="text-sm text-gray-700">
+                  {notification.title}
+                </span>
               </div>
             )}
             

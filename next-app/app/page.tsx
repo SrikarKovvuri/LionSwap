@@ -40,7 +40,7 @@ export default function Home() {
             See all
           </Link>
         </div>
-        <ProductGrid products={products.filter((p) => p.category === "textbooks").slice(0, 4)} />
+        <ProductGrid products={products.filter((p) => p.category === "Textbooks").slice(0, 4)} />
       </section>
 
       <section className="mb-12">
@@ -50,7 +50,7 @@ export default function Home() {
             See all
           </Link>
         </div>
-        <ProductGrid products={products.filter((p) => p.category === "electronics").slice(0, 4)} />
+        <ProductGrid products={products.filter((p) => p.category === "Electronics").slice(0, 4)} />
       </section>
 
       <section>
@@ -60,7 +60,7 @@ export default function Home() {
             See all
           </Link>
         </div>
-        <ProductGrid products={products.filter((p) => p.category === "clothing").slice(0, 4)} />
+        <ProductGrid products={products.filter((p) => p.category === "Clothing").slice(0, 4)} />
       </section>
     </div>
   )
