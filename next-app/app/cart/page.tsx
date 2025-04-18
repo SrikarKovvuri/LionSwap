@@ -23,18 +23,15 @@ export default function ShoppingCart() {
   const removeFromCart = async (itemId: number) => {
     setCartItems(cartItems.filter(item => item.id !== itemId));
     try {
-        const token = localStorage.getItem("token");
-        const response = await axios.post("http://localhost:5000/remove", 
-            { item_id: itemId },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "applications/json"
-              }
-            }
-        );
-        console.log("Response:", response);
-    } catch (error) {
+           const token = localStorage.getItem("token");
+           await axios.delete("http://localhost:5000/cart/remove", {
+             headers: {
+               Authorization: `Bearer ${token}`,
+               "Content-Type": "application/json",
+             },
+            data: { item_id: itemId },
+           });
+         } catch (error) {
         console.error("Error w/ Cart API removeFromCart", error);
     }
   };

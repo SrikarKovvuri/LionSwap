@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, User, Product, CartItem
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import app
+
 
 cart_bp = Blueprint('cart', __name__)
 
@@ -47,7 +47,7 @@ def add_to_cart():
     if request.method == 'OPTIONS':
         return jsonify({}), 200
     
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     
     product_name = data.get('item_name')
@@ -55,11 +55,14 @@ def add_to_cart():
     product_price = data.get('item_price')
     product_image = data.get('item_image')
 
+    if not all([product_id, product_name, product_price, product_image]):
+        return jsonify({'error': 'Missing required fields'}), 400
+
     
     # Check if product exists in our database 
-    product = Product.query.get(product_id) #       COME BACK TO THIS AFTER YOU MAKE LISTING POST REQUESTS WORK (adding new listings to the database)
-    if not product or not product.is_available:
-        return jsonify({'error': 'Product not available'}), 400
+    #product = Product.query.get(product_id) #       COME BACK TO THIS AFTER YOU MAKE LISTING POST REQUESTS WORK (adding new listings to the database)
+    #if not product or not product.is_available:
+     #   return jsonify({'error': 'Product not available'}), 400
     
     # Check if product is already in cart
     cart_item = CartItem.query.filter_by(user_id=user_id, product_id=product_id).first()
@@ -74,7 +77,7 @@ def add_to_cart():
 
 
 
-@cart_bp.route('/cart/remove', methods=['DELETE'])
+@cart_bp.route('/remove', methods=['DELETE'])
 @jwt_required()
 def remove_from_cart(item_id):
     if request.method == 'OPTIONS':
@@ -82,9 +85,13 @@ def remove_from_cart(item_id):
 
     user_id = get_jwt_identity()
     
-    # Find and remove the cart item
     cart_item = CartItem.query.filter_by(id=item_id, user_id=user_id).first()
-    
+    data = request.get_json() or {}
+    item_id = data.get('item_id')
+    if not item_id:
+        return jsonify({"error": "item_id is required"}), 400
+    cart_item = CartItem.query.filter_by(id=item_id, user_id=user_id).first()
+
     if not cart_item:
         return jsonify({'error': 'Cart item not found'}), 404
     
