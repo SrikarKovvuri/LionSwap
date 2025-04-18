@@ -36,8 +36,10 @@ class Product(db.Model):
     image_url   = db.Column(db.String(250))
     posted_at   = db.Column(db.DateTime, default=datetime.utcnow)
     is_available = db.Column(db.Boolean, default=True)
+    category = db.Column(db.String(30), nullable = False)
 
     seller_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    seller_username = db.Column(db.String(80),  unique=True, nullable=False)
 
     reviews = db.relationship("Review", backref="product", lazy=True)
     orders  = db.relationship("Order",  backref="product", lazy=True)
@@ -51,8 +53,8 @@ class Review(db.Model):
     rating     = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
-    author_id  = db.Column(db.Integer, db.ForeignKey("user.id"),    nullable=False)
+#     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
+#     author_id  = db.Column(db.Integer, db.ForeignKey("user.id"),    nullable=False)
 
 # ───────────────────────────  ORDERS  ───────────────────────────
 class Order(db.Model):

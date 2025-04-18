@@ -1,43 +1,52 @@
 export interface User {
-  id: string
-  name: string
+  id: number
   username: string
-  avatarUrl: string
-  ratings: Rating[]
-}
-
-export interface Rating {
-  reviewer: string
-  stars: number
-  comment: string
-  date: string
+  password: string
+  timestamp: string
 }
 
 export interface Product {
   id: number
-  name: string
-  price: number
+  title: string
   description: string
-  imageUrl: string
-  category: string
+  price: number
   condition: string
-  status: "active" | "sold" | "reserved"
-  seller: {
-    id: string
-    name: string
-  }
+  imageUrl: string
+  timestamp: string
+  isAvailable: boolean
+  category: "Textbooks" | "Electronics" | "Furniture" | "Clothing" | "Accessories" | "Dorm Essentials" | "Sports" | "Event Tickets" | "Other"
+  //status: "active" | "sold" | "reserved"
+  sellerId: number
+}
+
+export interface Order {
+  id: number
+  buyerId: number
+  productId: number
+  timestamp: string
+  status: string
 }
 
 export interface Notification {
-  id: string;
-  userId: string;  // ID of the user receiving the notification
+  id: number;
+  userId: number;  // ID of the user receiving the notification
   type: "message" | "offer" | "purchase" | "price_drop" | "system";
   title: string;
   message: string;
   timestamp: string;  // ISO format date string
   read: boolean;
   actionUrl?: string;
-  senderId?: string;  // ID of the user sending the notification (if applicable)
-  productId?: string;  // ID of the related product (if applicable)
-  itemImage: string;
+  senderId?: number;  // ID of the user sending the notification (if applicable)
+  productId?: number;  // ID of the related product (if applicable)
+  itemImage?: string;
+}
+
+export interface CartItem {
+  id: number;
+  title: string;
+  userId: string;
+  productId: number;
+  price: number;
+  image: string;
+  timestamp: string;
 }

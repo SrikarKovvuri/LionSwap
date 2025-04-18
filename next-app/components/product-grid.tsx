@@ -18,7 +18,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
             <div className="aspect-square relative overflow-hidden">
               <Image
                 src={product.imageUrl || "/placeholder.svg"}
-                alt={product.name}
+                alt={product.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
@@ -38,7 +38,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
           </Link>
           <div className="p-3">
             <Link href={`/listings/${product.id}`} className="block">
-              <h3 className="font-medium text-sm line-clamp-2 mb-1">{product.name}</h3>
+              <h3 className="font-medium text-sm line-clamp-2 mb-1">{product.title}</h3>
               <p className="font-bold">${product.price.toFixed(2)}</p>
             </Link>
           </div>

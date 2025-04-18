@@ -49,7 +49,7 @@ export default function ProductPage({ params }: ProductPageProps) {
           <div className="relative aspect-square mb-4">
             <Image
               src={product.imageUrl || "/placeholder.svg"}
-              alt={product.name}
+              alt={product.title}
               fill
               className="object-cover rounded-lg"
             />
@@ -59,7 +59,7 @@ export default function ProductPage({ params }: ProductPageProps) {
               <div key={i} className="aspect-square relative">
                 <Image
                   src={product.imageUrl || "/placeholder.svg"}
-                  alt={`${product.name} thumbnail ${i + 1}`}
+                  alt={`${product.title} thumbnail ${i + 1}`}
                   fill
                   className="object-cover rounded-md cursor-pointer"
                 />
@@ -71,12 +71,12 @@ export default function ProductPage({ params }: ProductPageProps) {
         <div className="md:w-1/2">
           <div className="mb-6">
             <p className="text-sm text-gray-500 mb-1">New! Updated 1m ago</p>
-            <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
+            <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
             <p className="text-3xl font-bold mb-4">${product.price.toFixed(2)}</p>
             <p className="text-sm text-gray-500 mb-6">+$0.69 Buyer Protection fee</p>
 
             <div className="flex gap-4 mb-6">
-              <AddToCartButton itemId={product.id} itemName={product.name} itemPrice={product.price} itemImage={product.imageUrl}>Add to cart</AddToCartButton>
+              <AddToCartButton itemId={product.id} itemName={product.title} itemPrice={product.price} itemImage={product.imageUrl}/>
               <Button variant="outline" className="flex-1">
                 Make offer
               </Button>
@@ -116,7 +116,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 className="rounded-full"
               />
               <div>
-                <p className="font-medium">{product.seller.name}</p>
+                <p className="font-medium">{product.sellerUsername}</p>
                 <p className="text-sm text-gray-500">Columbia University</p>
               </div>
             </div>
