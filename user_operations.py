@@ -221,3 +221,13 @@ def delete_profile():
         return jsonify({"error": "Database error: " + str(err)}), 500
 
     return jsonify({"message": "User deleted successfully"}), 200
+
+
+
+# GET retrieved listings from VectorDB query
+@market_ops.route("/search", methods=["GET"])
+def vector_search(query):
+
+    listings = []
+
+    return jsonify(listings), 200

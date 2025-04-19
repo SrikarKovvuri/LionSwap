@@ -10,11 +10,11 @@ export interface Product {
   title: string
   description: string
   price: number
+  category: "Textbooks" | "Electronics" | "Furniture" | "Clothing" | "Accessories" | "Dorm Essentials" | "Sports" | "Event Tickets" | "Other"
   condition: string
   imageUrl: string
   timestamp: string
   isAvailable: boolean
-  category: "Textbooks" | "Electronics" | "Furniture" | "Clothing" | "Accessories" | "Dorm Essentials" | "Sports" | "Event Tickets" | "Other"
   //status: "active" | "sold" | "reserved"
   sellerId: number
   sellerUsername: string

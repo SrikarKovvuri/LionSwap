@@ -90,7 +90,7 @@ export default function Header() {
             >
               {currentUser?.avatarUrl ? (
                 <Image
-                  src={currentUser.avatarUrl}
+                  src={currentUser.avatarUrl || "/blank-pfp.webp"}
                   alt={currentUser.username}
                   width={40}
                   height={40}
