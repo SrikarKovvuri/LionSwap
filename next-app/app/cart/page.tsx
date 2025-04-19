@@ -1,37 +1,23 @@
-"use client"
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import axios from "axios";
+import { cartItems } from "@/lib/sample-data"
 
 export default function ShoppingCart() {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Introduction to Economics Textbook",
-      price: 45.00,
-      image: "/placeholder.svg"
-    },
-    {
-      id: 2,
-      name: "Calculus Early Transcendentals",
-      price: 50.00,
-      image: "/placeholder.svg"
-    }
-  ]);
 
   const removeFromCart = async (itemId: number) => {
-    setCartItems(cartItems.filter(item => item.id !== itemId));
     try {
-           const token = localStorage.getItem("token");
-           await axios.delete("http://localhost:5000/cart/remove", {
-             headers: {
-               Authorization: `Bearer ${token}`,
-               "Content-Type": "application/json",
-             },
-            data: { item_id: itemId },
-           });
-         } catch (error) {
+        const token = localStorage.getItem("token");
+        const response = await axios.delete(`http://localhost:5000/remove/${itemId}`, 
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "applications/json"
+              }
+            }
+        );
+        console.log("Response:", response);
+    } catch (error) {
         console.error("Error w/ Cart API removeFromCart", error);
     }
   };
@@ -68,13 +54,13 @@ export default function ShoppingCart() {
                     <div className="w-20 h-20 relative flex-shrink-0">
                       <Image 
                         src={item.image} 
-                        alt={item.name} 
+                        alt={item.title} 
                         layout="fill" 
                         objectFit="contain" 
                       />
                     </div>
                     <div>
-                      <h3 className="font-medium">{item.name}</h3>
+                      <h3 className="font-medium">{item.title}</h3>
                       <button 
                         onClick={() => removeFromCart(item.id)}
                         className="text-sm text-blue-600 hover:underline mt-1"

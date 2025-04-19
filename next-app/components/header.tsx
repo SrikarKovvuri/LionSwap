@@ -82,8 +82,8 @@ export default function Header() {
             >
               {currentUser ? (
                 <Image
-                  src={currentUser.avatarUrl}
-                  alt={currentUser.name}
+                  src={"/blank-pfp.webp"}
+                  alt={currentUser.username}
                   width={40}
                   height={40}
                   className="object-cover"

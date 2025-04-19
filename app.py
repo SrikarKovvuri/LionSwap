@@ -5,12 +5,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from user_operations import market_ops
 from models import db
 from flask_migrate import Migrate
 from stripe import stripe_bp
 from auth import auth_bp
 from cart import cart_bp
+from user_operations import market_ops
+
 
 load_dotenv()
 

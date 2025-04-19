@@ -18,9 +18,9 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     notFound()
   }
 
-  const userProducts = products.filter((p) => p.seller.id === user.id)
-  const activeListings = userProducts.filter((p) => p.status === "active")
-  const soldListings = userProducts.filter((p) => p.status === "sold")
+  const userProducts = products.filter((p) => p.sellerId === user.id)
+  const activeListings = userProducts.filter((p) => p.isAvailable === true)
+  const soldListings = userProducts.filter((p) => p.isAvailable === false)
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -28,19 +28,18 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         <div className="md:w-1/3 flex flex-col items-center">
           <div className="relative w-32 h-32 mb-4">
             <Image
-              src={user.avatarUrl || "/placeholder.svg"}
-              alt={user.name}
+              src={"/blank-pfp.webp"}
+              alt={user.username}
               fill
               className="object-cover rounded-full"
             />
           </div>
-          <h1 className="text-2xl font-bold mb-1">{user.name}</h1>
-          <p className="text-gray-500 mb-4">@{user.username}</p>
+          <h1 className="text-2xl font-bold mb-1">{user.username}</h1>
           <div className="flex gap-4 mb-6">
-            <div className="text-center">
+            {/* <div className="text-center">
               <p className="font-bold">{user.ratings.length}</p>
               <p className="text-sm text-gray-500">Ratings</p>
-            </div>
+            </div> */}
             <div className="text-center">
               <p className="font-bold">{activeListings.length}</p>
               <p className="text-sm text-gray-500">Listings</p>
@@ -65,9 +64,9 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               <TabsTrigger value="sold" className="flex-1">
                 Sold
               </TabsTrigger>
-              <TabsTrigger value="reviews" className="flex-1">
+              {/* <TabsTrigger value="reviews" className="flex-1">
                 Reviews
-              </TabsTrigger>
+              </TabsTrigger> */}
             </TabsList>
 
             <TabsContent value="listings">
@@ -90,7 +89,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               )}
             </TabsContent>
 
-            <TabsContent value="reviews">
+            {/* <TabsContent value="reviews">
               {user.ratings.length > 0 ? (
                 <div className="space-y-4">
                   {user.ratings.map((rating, index) => (
@@ -127,7 +126,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                   <p className="text-gray-500">No reviews yet</p>
                 </div>
               )}
-            </TabsContent>
+            </TabsContent> */}
           </Tabs>
         </div>
       </div>

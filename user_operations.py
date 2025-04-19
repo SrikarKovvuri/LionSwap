@@ -40,9 +40,13 @@ def create_listing():
 
     if not title or price is None or not condition:
         return jsonify({"error": "Title, price, and condition are required"}), 400
+    
+    user = User.query.filter_by(id=seller_id).first()
+    username = user.username
 
     product = Product(
         seller_id=seller_id,
+        seller_username=username,
         title=title,
         description=description,
         price=price,

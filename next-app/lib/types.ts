@@ -17,6 +17,7 @@ export interface Product {
   category: "Textbooks" | "Electronics" | "Furniture" | "Clothing" | "Accessories" | "Dorm Essentials" | "Sports" | "Event Tickets" | "Other"
   //status: "active" | "sold" | "reserved"
   sellerId: number
+  sellerUsername: string
 }
 
 export interface Order {
@@ -44,7 +45,7 @@ export interface Notification {
 export interface CartItem {
   id: number;
   title: string;
-  userId: string;
+  userId: number;
   productId: number;
   price: number;
   image: string;

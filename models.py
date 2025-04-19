@@ -68,6 +68,24 @@ class Order(db.Model):
 
     buyer = db.relationship("User", backref="orders", foreign_keys=[buyer_id])
 
+# ───────────────────────────  NOTIFICATIONS  ───────────────────────
+class Notification(db.Model):
+    __tablename__ = "notification"
+
+    id         = db.Column(db.Integer, primary_key=True)
+    user_id    = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    type       = db.Column(db.String(50), nullable=False)
+    title      = db.Column(db.String(100), nullable=False)
+    message    = db.Column(db.Text)
+    received_at= db.Column(db.DateTime, default=datetime.utcnow)
+    read       = db.Column(db.Boolean, nullable=False)
+    action_url = db.Column(db.String(250), nullable=True)
+    sender_id  = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=True)
+    image_url  = db.Column(db.String(250), nullable=True)
+
+    buyer = db.relationship("User", backref="notifications", foreign_keys=[user_id])
+
 # ───────────────────────────  CART ITEMS  ───────────────────────
 class CartItem(db.Model):
     __tablename__ = "cart_item"

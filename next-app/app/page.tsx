@@ -2,9 +2,23 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import ProductGrid from "@/components/product-grid"
-import { products } from "@/lib/sample-data"
+import axios from "axios";
 
-export default function Home() {
+
+async function getListings() {
+  try{
+    const results = await axios.get('http://localhost:5000/listing', {});
+    return results.data;
+  }
+  catch (err: any) {
+    console.error("getServerSideProps error", err.response?.data || err.message);
+    return []
+  }
+}
+
+export default async function Home() {
+  const listings = await getListings()
+
   return (
     <div className="container mx-auto px-4 py-8">
       <section className="mb-12">
@@ -40,7 +54,7 @@ export default function Home() {
             See all
           </Link>
         </div>
-        <ProductGrid products={products.filter((p) => p.category === "Textbooks").slice(0, 4)} />
+        <ProductGrid products={listings.filter((p: { category: string; }) => p.category === "Textbooks").slice(0, 4)} />
       </section>
 
       <section className="mb-12">
@@ -50,7 +64,7 @@ export default function Home() {
             See all
           </Link>
         </div>
-        <ProductGrid products={products.filter((p) => p.category === "Electronics").slice(0, 4)} />
+        <ProductGrid products={listings.filter((p: { category: string; }) => p.category === "Electronics").slice(0, 4)} />
       </section>
 
       <section>
@@ -60,7 +74,7 @@ export default function Home() {
             See all
           </Link>
         </div>
-        <ProductGrid products={products.filter((p) => p.category === "Clothing").slice(0, 4)} />
+        <ProductGrid products={listings.filter((p: { category: string; }) => p.category === "Clothing").slice(0, 4)} />
       </section>
     </div>
   )
