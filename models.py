@@ -84,7 +84,7 @@ class CartItem(db.Model):
     user_id   = db.Column(db.Integer, db.ForeignKey("user.id"),    nullable=False)
     product_id= db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     price     = db.Column(db.Float, nullable=False)
-    image     = db.Column(db.String(200))
+    image_url = db.Column(db.String(250))
     added_at  = db.Column(db.DateTime, default=datetime.utcnow)
 
     user    = db.relationship("User",    back_populates="cart_items")
