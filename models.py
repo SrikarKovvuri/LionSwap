@@ -32,6 +32,7 @@ class Product(db.Model):
     is_available = db.Column(db.Boolean, default=True)
 
     seller_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    seller_username = db.Column(db.String(100), nullable = True)
 
     reviews = db.relationship("Review", backref="product", lazy=True)
     orders  = db.relationship("Order",  backref="product", lazy=True)

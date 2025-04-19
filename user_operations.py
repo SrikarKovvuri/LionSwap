@@ -53,6 +53,20 @@ def create_listing():
     db.session.add(product)
     try:
         db.session.commit()
+
+        #build a response dict by hand: 
+        listing_data = {
+            "id":           product.id,
+            "seller_id":    product.seller_id,
+            "title":        product.title,
+            "description":  product.description,
+            "price":        product.price,
+            "condition":    product.condition,
+            "image_url":    product.image_url,
+            "is_available": product.is_available,
+            "posted_at":    product.posted_at.isoformat()
+        }
+        return jsonify({"message": "Listing created", "listing": listing_data}), 201
     except Exception as err:
         db.session.rollback()
         return jsonify({"error": "Database error: " + str(err)}), 500
