@@ -9,14 +9,31 @@ market_ops = Blueprint("market_operations", __name__)
 def get_listings():
     keyword = request.args.get("keyword", "").strip()
     condition_filter = request.args.get("condition")
-    
+
     query = Product.query
     if keyword:
         query = query.filter(Product.title.ilike(f"%{keyword}%"))
     if condition_filter:
         query = query.filter_by(condition=condition_filter)
+
     products = query.all()
-    return jsonify({"listings": [product.to_dict() for product in products]}), 200
+
+    listings = []
+    for p in products:
+        listings.append({
+            "id":           p.id,
+            "seller_id":    p.seller_id,
+            "title":        p.title,
+            "description":  p.description,
+            "price":        p.price,
+            "category":     p.category,
+            "condition":    p.condition,
+            "image_url":    p.image_url,
+            "is_available": p.is_available,
+            "posted_at":    p.posted_at.isoformat() if p.posted_at else None
+        })
+
+    return jsonify({"listings": listings}), 200
 
 # retrieve details for a specific product
 @market_ops.route('/listings/<int:listing_id>', methods=['GET'])
