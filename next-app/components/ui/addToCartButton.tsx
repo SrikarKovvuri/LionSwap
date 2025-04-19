@@ -8,6 +8,7 @@ interface AddToCartButtonProps {
   itemName: string;
   itemPrice: number | string;
   itemImage: string;
+  itemCategory: string;
 }
 
 export default function AddToCartButton({
@@ -15,6 +16,7 @@ export default function AddToCartButton({
   itemName,
   itemPrice,
   itemImage,
+  itemCategory,
 }: AddToCartButtonProps) {
   const addToCart = async () => {
     const body = {
@@ -22,6 +24,7 @@ export default function AddToCartButton({
       item_name: itemName,
       item_price: Number(itemPrice),
       item_image: itemImage,
+      item_category: itemCategory
     };
     // quick client‑side validation
     if (isNaN(body.item_id) || isNaN(body.item_price)) {
