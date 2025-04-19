@@ -54,8 +54,8 @@ def add_to_cart():
     product_id = data.get('item_id')
     product_price = data.get('item_price')
     product_image = data.get('item_image')
-
-    if not all([product_id, product_name, product_price, product_image]):
+    product_category = data.get('item_category')
+    if not all([product_id, product_name, product_price, product_image, product_category]):
         return jsonify({'error': 'Missing required fields'}), 400
 
     
