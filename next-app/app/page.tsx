@@ -7,11 +7,11 @@ import axios from "axios";
 
 async function getListings() {
   try{
-    const results = await axios.get('http://localhost:5000/listing', {});
+    const results = await axios.get('http://localhost:5000/listings', {});
     return results.data;
   }
   catch (err: any) {
-    console.error("getServerSideProps error", err.response?.data || err.message);
+    console.error("getListings(TypeScript) error", err.response?.data || err.message);
     return []
   }
 }

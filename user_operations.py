@@ -7,8 +7,8 @@ market_ops = Blueprint("market_operations", __name__)
 # publicly list all product listings with optional filtering by keyword or condition
 @market_ops.route('/listings', methods=['GET'])
 def get_listings():
-    keyword = request.args.get("keyword", "").strip()
-    condition_filter = request.args.get("condition")
+    keyword = request.args.get("keyword", "").strip() # OPTIONAL
+    condition_filter = request.args.get("condition") # OPTIONAL
     
     query = Product.query
     if keyword:

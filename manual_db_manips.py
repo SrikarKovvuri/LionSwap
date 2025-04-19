@@ -1,3 +1,4 @@
+from app import app
 from models import db, Product
 
 products = [
@@ -10,7 +11,7 @@ products = [
         "category": "Textbooks",
         "condition": "good",
         "is_available": True,
-        "timestamp": "2025-04-01T09:15:00Z",
+        "posted_at": "2025-04-01T09:15:00Z",
         "seller_id": 1,
         "seller_username": "alexj",
     },
@@ -23,7 +24,7 @@ products = [
         "category": "Electronics",
         "condition": "like_new",
         "is_available": True,
-        "timestamp": "2025-04-02T11:30:00Z",
+        "posted_at": "2025-04-02T11:30:00Z",
         "seller_id": 2,
         "seller_username": "jamies",
     },
@@ -36,7 +37,7 @@ products = [
         "category": "Clothing",
         "condition": "good",
         "is_available": True,
-        "timestamp": "2025-04-03T14:20:00Z",
+        "posted_at": "2025-04-03T14:20:00Z",
         "seller_id": 1,
         "seller_username": "alexj",
     },
@@ -49,7 +50,7 @@ products = [
         "category": "Dorm Essentials",
         "condition": "good",
         "is_available": True,
-        "timestamp": "2025-04-04T16:45:00Z",
+        "posted_at": "2025-04-04T16:45:00Z",
         "seller_id": 2,
         "seller_username": "jamies",
     },
@@ -62,7 +63,7 @@ products = [
         "category": "Textbooks",
         "condition": "good",
         "is_available": True,
-        "timestamp": "2025-04-05T10:10:00Z",
+        "posted_at": "2025-04-05T10:10:00Z",
         "seller_id": 1,
         "seller_username": "alexj",
     },
@@ -75,7 +76,7 @@ products = [
         "category": "Electronics",
         "condition": "good",
         "is_available": True,
-        "timestamp": "2025-04-06T13:25:00Z",
+        "posted_at": "2025-04-06T13:25:00Z",
         "seller_id": 2,
         "seller_username": "jamies",
     },
@@ -88,7 +89,7 @@ products = [
         "category": "Clothing",
         "condition": "like_new",
         "is_available": True,
-        "timestamp": "2025-04-07T09:50:00Z",
+        "posted_at": "2025-04-07T09:50:00Z",
         "seller_id": 1,
         "seller_username": "alexj",
     },
@@ -101,26 +102,27 @@ products = [
         "category": "Dorm Essentials",
         "condition": "good",
         "is_available": False,
-        "timestamp": "2025-04-08T15:35:00Z",
+        "posted_at": "2025-04-08T15:35:00Z",
         "seller_id": 2,
         "seller_username": "jamies",
     },
 ]
 
 # Add to the database
-for item in products:
-    product = Product(
-        seller_id=item["seller_id"],
-        seller_username=item["seller_username"],
-        title=item["title"],
-        description=item["description"],
-        price=item["price"],
-        condition=item["condition"],
-        image_url=item["image_url"],
-        is_available=item["is_available"],
-        category=item["category"],
-        timestamp=item["timestamp"]
-    )
-    db.session.add(product)
+with app.app_context():
+    for item in products:
+        product = Product(
+            seller_id=item["seller_id"],
+            seller_username=item["seller_username"],
+            title=item["title"],
+            description=item["description"],
+            price=item["price"],
+            condition=item["condition"],
+            image_url=item["image_url"],
+            is_available=item["is_available"],
+            category=item["category"],
+            posted_at=item["posted_at"]
+        )
+        db.session.add(product)
 
-db.session.commit()
+    db.session.commit()
