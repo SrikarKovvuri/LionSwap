@@ -39,7 +39,7 @@ class Product(db.Model):
 
     reviews = db.relationship("Review", backref="product", lazy=True)
     orders  = db.relationship("Order",  backref="product", lazy=True)
-    vector = db(ARRAY(Float))
+    vector = db.Column(ARRAY(Float))
 class Review(db.Model):
     __tablename__ = "review"
     id        = db.Column(db.Integer, primary_key=True)
