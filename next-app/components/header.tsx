@@ -107,15 +107,15 @@ export default function Header() {
       <nav className="container mx-auto px-4 py-2 overflow-x-auto">
         <ul className="flex space-x-8 min-w-max">
           {[
-            ["Textbooks", "textbooks"],
-            ["Electronics", "electronics"],
-            ["Furniture", "furniture"],
-            ["Clothing", "clothing"],
-            ["Accessories", "accessories"],
-            ["Dorm Essentials", "dorm"],
-            ["Sports", "sports"],
-            ["Event Tickets", "tickets"],
-            ["Other", "other"],
+            ["Textbooks", "Textbooks"],
+            ["Electronics", "Electronics"],
+            ["Furniture", "Furniture"],
+            ["Clothing", "Clothing"],
+            ["Accessories", "Accessories"],
+            ["Dorm Essentials", "Dorm Essentials"],
+            ["Sports", "Sports"],
+            ["Event Tickets", "Event Tickets"],
+            ["Other", "Other"],
           ].map(([label, slug]) => (
             <li key={slug}>
               <Link href={`/category/${slug}`} className="text-sm hover:text-blue-600">

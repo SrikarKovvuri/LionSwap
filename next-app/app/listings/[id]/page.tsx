@@ -76,7 +76,7 @@ export default function ProductPage({ params }: ProductPageProps) {
             <p className="text-sm text-gray-500 mb-6">+$0.69 Buyer Protection fee</p>
 
             <div className="flex gap-4 mb-6">
-              <AddToCartButton itemId={product.id} itemName={product.title} itemPrice={product.price} itemImage={product.imageUrl}/>
+              <AddToCartButton itemId={product.id} itemName={product.title} itemPrice={product.price} itemImage={product.imageUrl} itemCategory={product.category}/>
               <Button variant="outline" className="flex-1">
                 Make offer
               </Button>

@@ -1,9 +1,10 @@
-// app/categories/[category]/page.tsx
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import ProductGrid from "@/components/product-grid"
 import { products } from "@/lib/sample-data"
 import { notFound } from "next/navigation"
+import axios from "axios";
+
 
 // Props type for the page component
 type CategoryPageProps = {
@@ -12,20 +13,28 @@ type CategoryPageProps = {
   };
 };
 
-export default function CategoryPage({ params }: CategoryPageProps) {
+async function getListings(category: string) {
+  try{
+    const results = await axios.get(`http://localhost:5000/listings/category/${category}`, {});
+    return results.data.listings;
+  }
+  catch (err: any) {
+    console.error("getListings(TypeScript) error", err.response?.data || err.message);
+    return []
+  }
+}
+
+export default async function CategoryPage({ params }: CategoryPageProps) {
   // Get the category from the URL
   const category = params.category;
-  
-  // Format category for display (capitalize first letter)
-  const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1);
-  
+    
   // Filter products by the category
-  const categoryProducts = products.filter(product => product.category === category);
+  const categoryProducts = await getListings(category);
   
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">{formattedCategory}</h1>
+        <h1 className="text-3xl font-bold">{decodeURIComponent(category)}</h1>
         <Link href="/">
           <Button variant="outline">Back to Home</Button>
         </Link>

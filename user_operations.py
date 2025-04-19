@@ -7,14 +7,8 @@ market_ops = Blueprint("market_operations", __name__)
 # publicly list all product listings with optional filtering by keyword or condition
 @market_ops.route('/listings', methods=['GET'])
 def get_listings():
-    keyword = request.args.get("keyword", "").strip() # OPTIONAL
-    condition_filter = request.args.get("condition") # OPTIONAL
     
     query = Product.query
-    if keyword:
-        query = query.filter(Product.title.ilike(f"%{keyword}%"))
-    if condition_filter:
-        query = query.filter_by(condition=condition_filter)
 
     products = query.all()
 
@@ -42,6 +36,28 @@ def get_listing(listing_id):
     if not product:
         return jsonify({"error": "Listing not found"}), 404
     return jsonify({"listing": product.to_dict()}), 200
+
+# retrieve products of a specific category
+@market_ops.route('/listings/category/<category>', methods=['GET'])
+def get_listing_by_category(category):
+    products = Product.query.filter_by(category=category).limit(50).all()
+    listings = []
+    for p in products:
+        listings.append({
+            "id":           p.id,
+            "seller_id":    p.seller_id,
+            "title":        p.title,
+            "description":  p.description,
+            "price":        p.price,
+            "category":     p.category,
+            "condition":    p.condition,
+            "image_url":    p.image_url,
+            "is_available": p.is_available,
+            "posted_at":    p.posted_at.isoformat() if p.posted_at else None
+        })
+
+    return jsonify({"listings": listings}), 200
+
 
 # create a new product listing (Seller must be authenticated)
 @market_ops.route('/listings', methods=['POST'])
