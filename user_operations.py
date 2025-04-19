@@ -53,7 +53,8 @@ def create_listing():
     description = data.get("description", "")
     price = data.get("price")            
     condition = data.get("condition")    
-    image_url = data.get("image_url")    
+    image_url = data.get("image_url") 
+    category = data.get('category')   
 
     if not title or price is None or not condition:
         return jsonify({"error": "Title, price, and condition are required"}), 400
@@ -69,7 +70,8 @@ def create_listing():
         price=price,
         condition=condition,
         image_url=image_url,
-        is_available=True
+        is_available=True,
+        category = category
     )
     db.session.add(product)
     try:
@@ -85,7 +87,8 @@ def create_listing():
             "condition":    product.condition,
             "image_url":    product.image_url,
             "is_available": product.is_available,
-            "posted_at":    product.posted_at.isoformat()
+            "posted_at":    product.posted_at.isoformat(),
+            "category": product.category
         }
         return jsonify({"message": "Listing created", "listing": listing_data}), 201
     except Exception as err:
