@@ -1,12 +1,13 @@
-"use client"
-import Link from "next/link"
-import Image from "next/image"
-import { Heart } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import type { Product } from "@/lib/types"
+'use client';
+
+import Link from "next/link";
+import Image from "next/image";
+import { Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import type { Product } from "@/lib/types";
 
 interface ProductGridProps {
-  products: Product[]
+  products: Product[];
 }
 
 export default function ProductGrid({ products }: ProductGridProps) {
@@ -18,23 +19,12 @@ export default function ProductGrid({ products }: ProductGridProps) {
             <div className="aspect-square relative overflow-hidden">
               <Image
                 src={product.imageUrl || "/placeholder.svg"}
-                alt={product.title}
+                alt={product.title || "Product image"}
                 fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white/80 hover:bg-white"
-              onClick={(e) => {
-                e.preventDefault()
-                // Add to favorites logic here
-              }}
-            >
-              <Heart className="h-4 w-4" />
-              <span className="sr-only">Add to favorites</span>
-            </Button> */}
           </Link>
           <div className="p-3">
             <Link href={`/listings/${product.id}`} className="block">
@@ -45,5 +35,5 @@ export default function ProductGrid({ products }: ProductGridProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }
