@@ -60,7 +60,7 @@ def add_to_cart():
     
     if not cart_item:
         # if not already in cart, add new item to cart
-        cart_item = CartItem(user_id=user_id, title=product_title, product_id=product_id, price=product_price, image=product_image, added_at=datetime.utcnow())
+        cart_item = CartItem(user_id=user_id, title=product_title, product_id=product_id, price=product_price, image_url=product_image, added_at=datetime.utcnow())
         db.session.add(cart_item)
     
     db.session.commit()
@@ -68,7 +68,7 @@ def add_to_cart():
 
 
 
-@cart_bp.route('/cart/remove/<int:item_Id>', methods=['DELETE'])
+@cart_bp.route('/cart/remove/<int:item_id>', methods=['DELETE'])
 @jwt_required()
 def remove_from_cart(item_id):
     if request.method == 'OPTIONS':

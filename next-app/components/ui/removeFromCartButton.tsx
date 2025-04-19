@@ -3,18 +3,18 @@ import * as React from "react";
 import axios from "axios";
 
 interface RemoveFromCartProps {
-  itemId: number | number;
+  itemId: number;
 }
 
 export default function RemoveFromCartButton({itemId}: RemoveFromCartProps) {
     const removeFromCart = async (itemId: number) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`http://localhost:5000/remove/${itemId}`, 
+            const response = await axios.delete(`http://localhost:5000/cart/remove/${itemId}`, 
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": "applications/json"
+                    "Content-Type": "application/json"
                   }
                 }
             );

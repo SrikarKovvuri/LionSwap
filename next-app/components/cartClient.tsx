@@ -57,7 +57,7 @@ export default function CartClient() {
                         <div className="col-span-6 flex items-center gap-4">
                         <div className="w-20 h-20 relative flex-shrink-0">
                             <Image 
-                            src={item.imageUrl} 
+                            src={item.imageUrl || "/placeholder.svg"} 
                             alt={item.title} 
                             layout="fill" 
                             objectFit="contain" 
