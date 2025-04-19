@@ -148,15 +148,15 @@ export default function NewListingPage() {
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="textbooks">Textbooks</SelectItem>
-                <SelectItem value="electronics">Electronics</SelectItem>
-                <SelectItem value="furniture">Furniture</SelectItem>
-                <SelectItem value="clothing">Clothing</SelectItem>
-                <SelectItem value="accessories">Accessories</SelectItem>
-                <SelectItem value="dorm">Dorm Essentials</SelectItem>
-                <SelectItem value="sports">Sports</SelectItem>
-                <SelectItem value="tickets">Event Tickets</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="Textbooks">Textbooks</SelectItem>
+                <SelectItem value="Electronics">Electronics</SelectItem>
+                <SelectItem value="Furniture">Furniture</SelectItem>
+                <SelectItem value="Clothing">Clothing</SelectItem>
+                <SelectItem value="Accessories">Accessories</SelectItem>
+                <SelectItem value="Dorm">Dorm Essentials</SelectItem>
+                <SelectItem value="Sports">Sports</SelectItem>
+                <SelectItem value="Tickets">Event Tickets</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
