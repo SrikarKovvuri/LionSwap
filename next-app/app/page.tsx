@@ -8,7 +8,7 @@ import axios from "axios";
 async function getListings() {
   try{
     const results = await axios.get('http://localhost:5000/listings', {});
-    return results.data;
+    return results.data.listings;
   }
   catch (err: any) {
     console.error("getListings(TypeScript) error", err.response?.data || err.message);
