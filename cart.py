@@ -3,7 +3,6 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, User, Product, CartItem
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import app
 
 cart_bp = Blueprint('cart', __name__)
 
