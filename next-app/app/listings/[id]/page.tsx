@@ -1,46 +1,38 @@
 import Image from "next/image"
 import Link from "next/link"
-import { Heart, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import AddToCartButton from "@/components/ui/addToCartButton"
-import { products } from "@/lib/sample-data"
 import { notFound } from "next/navigation"
+import { Product } from "@/lib/types"
 import ProductGrid from "@/components/product-grid"
+import axios from "axios"
+
 
 interface ProductPageProps {
   params: {
-    id: string
+    id: number
   }
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-  // const [itemProperties, setItemProperties] = useState([
-  //   {
-  //     id: 0,
-  //     name: "",
-  //     price: 0.00,
-  //     image: ""
-  //   },
-  // ]);
 
-  const product = products.find((p) => p.id === Number(params.id))
+async function getListingById(id: number): Promise<Product | null>{
+  try{
+    const results = await axios.get(`http://localhost:5000/listings/${id}`, {});
+    return results.data.listing;
+  }
+  catch (err: any) {
+    console.error("getListing(TypeScript) error", err.response?.data || err.message);
+    return null
+  }
+}
+
+export default async function ProductPage({ params }: ProductPageProps) {
+
+  const product = await getListingById(params.id)
 
   if (!product) {
     notFound()
   }
-
-  // useEffect(() => {
-  //   if (product) {
-  //     setItemProperties([{
-  //       id: product.id,
-  //       name: product.name,
-  //       price: product.price,
-  //       image: product.imageUrl,
-  //     }]);
-  //   }
-  // }, [product]);
-
-  const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4)
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -131,7 +123,7 @@ export default function ProductPage({ params }: ProductPageProps) {
             See all
           </Link>
         </div>
-        <ProductGrid products={relatedProducts} />
+        {/* <ProductGrid products={relatedProducts} /> */}
       </section>
     </div>
   )

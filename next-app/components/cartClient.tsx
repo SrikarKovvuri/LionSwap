@@ -3,8 +3,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import axios from "axios";
 import { useEffect, useState } from 'react';
-import RemoveFromCartButton from "@/components/ui/removeFromCartButton";
 import type { CartItem } from "@/lib/types";
+
+interface RemoveFromCartProps {
+    itemId: number;
+}
 
 
 export default function CartClient() {
@@ -26,13 +29,41 @@ export default function CartClient() {
                 console.log("Cart is Empty or getCartItems(TypeScript) error", err.response?.data || err.message);
             }
         }
-
         fetchCartItems();
     }, []);
+
+
+    const removeFromCart = async (itemId: number) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(`http://localhost:5000/cart/remove/${itemId}`, 
+                {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+                }
+            );
+            console.log("Response:", response);
+            setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+        } catch (error) {
+            console.error("Error w/ Cart API removeFromCart", error);
+        }
+    };
+
+    function RemoveFromCartButton({itemId}: RemoveFromCartProps) {
+        return (
+            <button className="text-sm text-blue-600 hover:underline mt-1" onClick={() => removeFromCart(itemId)}>
+                Remove
+            </button>
+        );
+    }
+
 
     const calculateTotal = () => {
         return cartItems.reduce((total, item) => total + (item.price), 0).toFixed(2);
     };
+
 
     return(
         <main>

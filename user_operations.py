@@ -35,7 +35,20 @@ def get_listing(listing_id):
     product = Product.query.get(listing_id)
     if not product:
         return jsonify({"error": "Listing not found"}), 404
-    return jsonify({"listing": product.to_dict()}), 200
+    
+    listing = {
+        "id":           product.id,
+        "seller_id":    product.seller_id,
+        "title":        product.title,
+        "description":  product.description,
+        "price":        product.price,
+        "category":     product.category,
+        "condition":    product.condition,
+        "image_url":    product.image_url,
+        "is_available": product.is_available,
+        "posted_at":    product.posted_at.isoformat() if product.posted_at else None
+    }
+    return jsonify({"listing": listing}), 200
 
 # retrieve products of a specific category
 @market_ops.route('/listings/category/<category>', methods=['GET'])
