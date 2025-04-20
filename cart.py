@@ -26,7 +26,7 @@ def get_cart():
             'productId': item.product_id,
             'price': item.price,
             'imageUrl': item.image_url,
-            'timestamp': item.added_at
+            'timestamp': item.added_at.isoformat()
         }
         cart_data.append(item_data)
 
@@ -47,10 +47,10 @@ def add_to_cart():
     product_id = data.get('item_id')
     product_price = data.get('item_price')
     product_image = data.get('item_image')
+    product_category = data.get('item_category')
 
-    
     # Check if product exists in our database 
-    product = Product.query.get(product_id) #       COME BACK TO THIS AFTER YOU MAKE LISTING POST REQUESTS WORK (adding new listings to the database)
+    product = Product.query.get(product_id)
     if not product or not product.is_available:
         return jsonify({'error': 'Product not available'}), 400
     
@@ -59,7 +59,7 @@ def add_to_cart():
     
     if not cart_item:
         # if not already in cart, add new item to cart
-        cart_item = CartItem(user_id=user_id, title=product_title, product_id=product_id, price=product_price, image=product_image, added_at=datetime.utcnow())
+        cart_item = CartItem(user_id=user_id, title=product_title, product_id=product_id, price=product_price, image_url=product_image, added_at=datetime.utcnow())
         db.session.add(cart_item)
     
     db.session.commit()
@@ -67,7 +67,7 @@ def add_to_cart():
 
 
 
-@cart_bp.route('/cart/remove/<int:item_Id>', methods=['DELETE'])
+@cart_bp.route('/cart/remove/<int:item_id>', methods=['DELETE'])
 @jwt_required()
 def remove_from_cart(item_id):
     if request.method == 'OPTIONS':
