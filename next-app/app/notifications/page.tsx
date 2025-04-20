@@ -1,14 +1,24 @@
 // app/notifications/page.tsx
+"use client"
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { notifications, products } from "@/lib/sample-data"
 import { Notification } from "@/lib/types"
+import { redirect } from "next/navigation"
+import { useAuth } from "@/app/context/AuthContext"
 
 import { formatDistanceToNow } from "date-fns";
 
 
 export default function NotificationsPage() {
+
+  const { isLoggedIn, setIsLoggedIn } = useAuth()
+
+  if(!isLoggedIn){
+      redirect("/login")
+  }
+
   // Group notifications by date
   const today = new Date().setHours(0, 0, 0, 0);
   const yesterday = new Date(today);

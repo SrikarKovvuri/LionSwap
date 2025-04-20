@@ -48,6 +48,6 @@ export interface CartItem {
   userId: number;
   productId: number;
   price: number;
-  image_url: string;
+  imageUrl: string;
   timestamp: string;
 }

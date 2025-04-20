@@ -10,7 +10,7 @@ def get_listings():
     
     query = Product.query
 
-    products = query.all()
+    products = query.limit(20).all()
 
     listings = []
     for p in products:
@@ -54,6 +54,32 @@ def get_listing(listing_id):
 @market_ops.route('/listings/category/<category>', methods=['GET'])
 def get_listing_by_category(category):
     products = Product.query.filter_by(category=category).limit(50).all()
+    listings = []
+    for p in products:
+        listings.append({
+            "id":           p.id,
+            "seller_id":    p.seller_id,
+            "title":        p.title,
+            "description":  p.description,
+            "price":        p.price,
+            "category":     p.category,
+            "condition":    p.condition,
+            "image_url":    p.image_url,
+            "is_available": p.is_available,
+            "posted_at":    p.posted_at.isoformat() if p.posted_at else None
+        })
+
+    return jsonify({"listings": listings}), 200
+
+# retrieve products by a specific user
+@market_ops.route('/listings/specific/user', methods=['GET'])
+@jwt_required()
+def get_listing_by_user():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+    
+    user_id = get_jwt_identity()
+    products = Product.query.filter_by(seller_id=user_id).all()
     listings = []
     for p in products:
         listings.append({

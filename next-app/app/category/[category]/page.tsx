@@ -24,11 +24,11 @@ async function getListings(category: string) {
   }
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
-  // Get the category from the URL
-  const category = params.category;
-    
-  // Filter products by the category
+export default async function CategoryPage(props: CategoryPageProps) {
+
+  const params = await props.params;
+  const { category } = params;
+  
   const categoryProducts = await getListings(category);
   
   return (
