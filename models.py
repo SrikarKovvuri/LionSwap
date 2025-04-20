@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy import Float
+from pgvector.sqlalchemy import Vector
 
 db = SQLAlchemy()
 
@@ -39,7 +40,7 @@ class Product(db.Model):
 
     reviews = db.relationship("Review", backref="product", lazy=True)
     orders  = db.relationship("Order",  backref="product", lazy=True)
-    vector = db.Column(ARRAY(Float))
+    vector = db.Column(Vector(384), nullable = True)
 class Review(db.Model):
     __tablename__ = "review"
     id        = db.Column(db.Integer, primary_key=True)
