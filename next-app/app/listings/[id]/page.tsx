@@ -26,9 +26,13 @@ async function getListingById(id: number): Promise<Product | null>{
   }
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage(props: ProductPageProps) {
 
-  const product = await getListingById(params.id)
+  // Await props.params before destructuring
+  const params = await props.params;
+  const { id } = params;
+  
+  const product = await getListingById(Number(id));
 
   if (!product) {
     notFound()

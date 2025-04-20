@@ -117,14 +117,13 @@ def create_listing():
             "image_url":    product.image_url,
             "is_available": product.is_available,
             "posted_at":    product.posted_at.isoformat(),
-            "category": product.category
+            "category":     product.category
         }
         return jsonify({"message": "Listing created", "listing": listing_data}), 201
     except Exception as err:
         db.session.rollback()
         return jsonify({"error": "Database error: " + str(err)}), 500
 
-    return jsonify({"message": "Listing created", "listing": product.to_dict()}), 201
 #update a product listing (owner-only)
 @market_ops.route('/listings/<int:listing_id>', methods=['PUT'])
 @jwt_required()
@@ -148,8 +147,21 @@ def update_listing(listing_id):
     except Exception as err:
         db.session.rollback()
         return jsonify({"error": "Database error: " + str(err)}), 500
+    
+    listing_data = {
+        "id":           product.id,
+        "seller_id":    product.seller_id,
+        "title":        product.title,
+        "description":  product.description,
+        "price":        product.price,
+        "condition":    product.condition,
+        "image_url":    product.image_url,
+        "is_available": product.is_available,
+        "posted_at":    product.posted_at.isoformat(),
+        "category":     product.category
+    }
 
-    return jsonify({"message": "Listing updated", "listing": product.to_dict()}), 200
+    return jsonify({"message": "Listing updated", "listing": listing_data}), 200
 
 # delete a product listing (owner-only)
 @market_ops.route('/listings/<int:listing_id>', methods=['DELETE'])
@@ -178,7 +190,7 @@ def create_order():
     buyer_id = get_jwt_identity()  
     data = request.get_json() or {}
     product_id = data.get("product_id")
-    quantity = data.get("quantity", 1) 
+    ordered_at = data.get("ordered_at")
     if not product_id:
         return jsonify({"error": "Product ID is required"}), 400
 
@@ -186,14 +198,10 @@ def create_order():
     if not product:
         return jsonify({"error": "Listing not found"}), 404
 
-    # Calculate total cost (here, price is assumed to be in dollars; adjust accordingly if stored in cents)
-    total = product.price * quantity
-
     order = Order(
         buyer_id=buyer_id,
         product_id=product_id,
-        quantity=quantity,
-        total=total,
+        ordered_at=ordered_at,
         status="Pending"
     )
     db.session.add(order)
@@ -202,8 +210,15 @@ def create_order():
     except Exception as err:
         db.session.rollback()
         return jsonify({"error": "Database error: " + str(err)}), 500
+    
+    order_data = {
+        "buyer_id": buyer_id,
+        "product_id": product_id,
+        "ordered_at": ordered_at.isoformat(),
+        "status": "Pending"
+    }
 
-    return jsonify({"message": "Order created", "order": order.to_dict()}), 201
+    return jsonify({"message": "Order created", "order": order_data}), 201
 
 # Retrieve order details (accessible to buyer or the seller for the product)
 @market_ops.route('/orders/<int:order_id>', methods=['GET'])
@@ -218,8 +233,15 @@ def get_order(order_id):
     # allow access if the logged-in user is either the buyer or the seller of the product
     if order.buyer_id != user_id and product.seller_id != user_id:
         return jsonify({"error": "Unauthorized to view this order"}), 403
+    
+    order_data = {
+        "buyer_id": order.buyer_id,
+        "product_id": order.product_id,
+        "ordered_at": order.ordered_at.isoformat(),
+        "status": order.status
+    }
 
-    return jsonify({"order": order.to_dict()}), 200
+    return jsonify({"order": order_data}), 200
 
 @market_ops.route("/users/profile", methods=["GET"])
 @jwt_required()
@@ -228,7 +250,13 @@ def get_profile():
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "User not found"}), 404
-    return jsonify({"user": user.to_dict()}), 200
+    
+    user_data = {
+        "username": user.username,
+        "password_hash": user.password_hash,
+        "created_at": user.created_at
+    }
+    return jsonify({"user": user_data}), 200
 
 @market_ops.route("/users/profile", methods=["PUT"])
 @jwt_required()
@@ -249,8 +277,13 @@ def update_profile():
     except Exception as err:
         db.session.rollback()
         return jsonify({"error": "Database error: " + str(err)}), 500
-
-    return jsonify({"message": "User updated successfully", "user": user.to_dict()}), 200
+    
+    user_data = {
+        "username": user.username,
+        "password_hash": user.password_hash,
+        "created_at": user.created_at
+    }
+    return jsonify({"message": "User updated successfully", "user": user_data}), 200
 
 # DELETE /users/profile
 @market_ops.route("/users/profile", methods=["DELETE"])

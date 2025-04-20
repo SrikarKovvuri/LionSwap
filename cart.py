@@ -27,7 +27,7 @@ def get_cart():
             'productId': item.product_id,
             'price': item.price,
             'imageUrl': item.image_url,
-            'timestamp': item.added_at
+            'timestamp': item.added_at.isoformat()
         }
         cart_data.append(item_data)
 
@@ -48,10 +48,10 @@ def add_to_cart():
     product_id = data.get('item_id')
     product_price = data.get('item_price')
     product_image = data.get('item_image')
+    product_category = data.get('item_category')
 
-    
     # Check if product exists in our database 
-    product = Product.query.get(product_id) #       COME BACK TO THIS AFTER YOU MAKE LISTING POST REQUESTS WORK (adding new listings to the database)
+    product = Product.query.get(product_id)
     if not product or not product.is_available:
         return jsonify({'error': 'Product not available'}), 400
     
