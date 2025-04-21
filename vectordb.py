@@ -42,10 +42,13 @@ def search():
     dict_json = []
     for r in results: 
         dict_json.append({
-            "id": r.id,
-            "title": r.title,
-            "description": r.description,
-            "category": r.category
+            "id":             r.id,
+            "title":          r.title,
+            "description":    r.description,
+            "category":       r.category,
+            "price":          r.price,          
+            "imageUrl":       r.image_url,   
+            "sellerUsername": r.seller_username
         })
 
     return jsonify({"results": dict_json}), 200
