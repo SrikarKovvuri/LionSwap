@@ -2,46 +2,31 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useSearchParams } from "next/navigation";
+import ProductGrid from "@/components/product-grid"
+import type { Product } from "@/lib/types";
 
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-}
-
-interface SearchPageProps {
-  searchParams: { q?: string };
-}
-
-export default function SearchPage({ searchParams }: SearchPageProps) {
-  const initialQuery = searchParams.q || "";
+export default function SearchPage() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
 
   const [searchQuestion, setSearchQuestion] = useState(initialQuery);
-  //  we'll stash the array of products returned from the server
   const [results, setResults] = useState<Product[]>([]);
 
   useEffect(() => {
-    if (initialQuery) {
-      fetchResults(initialQuery);
-    }
+    if (initialQuery) fetchResults(initialQuery);
   }, [initialQuery]);
 
-  
   async function fetchResults(query: string) {
+    const token = localStorage.getItem("token");
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
+      const { data } = await axios.post(
         "http://localhost:5000/search",
-        { query },                          
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { query },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      // Flask returns { results: [ { id, title, description }, … ] }
-      setResults(response.data.results);
+      setResults(data.results);
+      window.history.replaceState({}, "", `?q=${encodeURIComponent(query)}`);
     } catch (err: any) {
       console.error(err);
       alert(err.response?.data?.error || err.message);
@@ -54,30 +39,14 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
   }
 
   return (
-    <main>
-      <h1>Search Products</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={searchQuestion}
-          onChange={(e) => setSearchQuestion(e.target.value)}
-          placeholder="Search products..."
-        />
-        <button type="submit">Search</button>
-      </form>
+    <main className="max-w-6xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Search Results</h1>
 
-      <div style={{ marginTop: 20 }}>
-        {results.length === 0 ? (
-          <p>No results yet.</p>
-        ) : (
-          results.map((p) => (
-            <div key={p.id} style={{ borderBottom: "1px solid #ccc", padding: "8px 0" }}>
-              <h2>{p.title}</h2>
-              <p>{p.description}</p>
-            </div>
-          ))
-        )}
-      </div>
+      {results.length === 0 ? (
+        <p className="text-gray-600">No results found.</p>
+      ) : (
+        <ProductGrid products={results} />
+      )}
     </main>
   );
 }
