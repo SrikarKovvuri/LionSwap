@@ -247,7 +247,7 @@ export const cartItems: CartItem[] = [
     productId: 1,
     title: "Introduction to Economics Textbook",
     price: 45.0,
-    image: "/placeholder.svg?height=400&width=400",
+    imageUrl: "/placeholder.svg?height=400&width=400",
     timestamp: "2025-04-17T09:30:00Z"
   },
   {
@@ -256,7 +256,7 @@ export const cartItems: CartItem[] = [
     productId: 5,
     title: "Calculus Early Transcendentals",
     price: 50.00,
-    image: "/placeholder.svg",
+    imageUrl: "/placeholder.svg",
     timestamp: "2025-04-17T09:32:00Z"
   }
 ]

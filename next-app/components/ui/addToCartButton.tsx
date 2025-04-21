@@ -2,6 +2,7 @@
 import * as React from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
+import { redirect } from 'next/navigation'
 
 interface AddToCartButtonProps {
   itemId: number | string;   // allow string so we can cast
@@ -43,6 +44,7 @@ export default function AddToCartButton({
       });
       if (res.status === 200) alert("Successfully added to cart");
     } catch (err: any) {
+      redirect("/login");
       console.error("addToCart error", err.response?.data || err.message);
     }
   };

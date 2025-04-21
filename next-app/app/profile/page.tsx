@@ -1,26 +1,72 @@
+"use client"
 import Image from "next/image"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ProductGrid from "@/components/product-grid"
-import { users, products } from "@/lib/sample-data"
-import { notFound } from "next/navigation"
+import axios from "axios"
+import { notFound, redirect } from "next/navigation"
+import { useAuth } from "@/app/context/AuthContext"
+import { User, Product } from "@/lib/types"
 
 interface ProfilePageProps {
   params: {
-    username: string
+    id: number
   }
 }
 
 export default function ProfilePage({ params }: ProfilePageProps) {
-  const user = users.find((u) => u.username === params.username)
+  
+  const { isLoggedIn, setIsLoggedIn } = useAuth()
+
+  if(!isLoggedIn){
+      redirect("/login")
+  }
+
+  const [user, setUser] = useState<User>();
+  const [products, setProducts] = useState<Product[]>([])
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.get("http://localhost:5000/users/profile", {
+                headers: {
+                    Authorization: `Bearer ${token}`, // token inherently has userId, no need to pass it in
+                    "Content-Type": "application/json",
+                },
+                });
+                setUser(response.data.user);
+            } catch (err: any) {
+                console.log("getUser(TypeScript) error", err.response?.data || err.message);
+            }
+        }
+        async function fetchProducts() {
+          try {
+              const token = localStorage.getItem("token");
+              const response = await axios.get("http://localhost:5000/listings/specific/user", {
+              headers: {
+                  Authorization: `Bearer ${token}`, // token inherently has userId, no need to pass it in
+                  "Content-Type": "application/json",
+              },
+              });
+              setProducts(response.data.listings);
+          } catch (err: any) {
+              console.log("getProducts(TypeScript) error", err.response?.data || err.message);
+          }
+      }
+        
+      fetchUser();
+      fetchProducts();
+    }, []);
+
 
   if (!user) {
     notFound()
   }
 
-  const userProducts = products.filter((p) => p.sellerId === user.id)
-  const activeListings = userProducts.filter((p) => p.isAvailable === true)
-  const soldListings = userProducts.filter((p) => p.isAvailable === false)
+  const activeListings = products.filter((p) => p.isAvailable === true)
+  const soldListings = products.filter((p) => p.isAvailable === false)
 
   return (
     <div className="container mx-auto px-4 py-8">

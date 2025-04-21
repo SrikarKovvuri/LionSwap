@@ -25,7 +25,7 @@ export default async function Home() {
         <div className="bg-blue-50 rounded-lg p-8 flex flex-col md:flex-row items-center justify-between">
           <div className="mb-6 md:mb-0 md:mr-8">
             <h1 className="text-3xl font-bold mb-4">Columbia&apos;s Marketplace for Students</h1>
-            <p className="text-lg mb-6">Buy and sell second-hand items within the Columbia community.</p>
+            <p className="text-lg mb-6">Buy and sell second-hand items within the Columbia community with LionSwap.</p>
             <div className="flex gap-4">
               <Link href="/listings/new">
                 <Button className="bg-blue-600 hover:bg-blue-700">List an item</Button>

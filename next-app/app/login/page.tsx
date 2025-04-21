@@ -1,11 +1,13 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, createContext, useContext } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { useAuth } from "@/app/context/AuthContext"
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { isLoggedIn, setIsLoggedIn } = useAuth(); // import global context variable & setter function
 
   const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -29,6 +31,7 @@ export default function Login() {
         localStorage.setItem("token", token);
         alert("Login Successful");
         window.location.href = "/";
+        setIsLoggedIn(true);
       }
     } catch (error: any) {
       console.error(error.response?.data || error.message);

@@ -7,14 +7,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { users as rawUsers } from "@/lib/sample-data"
+import { useAuth } from "@/app/context/AuthContext"
 
 // Define exactly the fields we expect on a "demo" user
 type DemoUser = {
+  id: number
   username: string
   avatarUrl?: string
 }
 
 export default function Header() {
+  const { isLoggedIn, setIsLoggedIn } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
 
@@ -49,18 +52,21 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Link href="/notifications">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hidden md:flex items-center gap-2 relative"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                3
-              </span>
-            </Button>
-          </Link>
+          {(isLoggedIn)? (
+            <Link href="/notifications">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden md:flex items-center gap-2 relative"
+              >
+                <Bell className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  3
+                </span>
+              </Button>
+            </Link>
+            ) : (
+            <></>)}
 
           <Link href="/cart">
             <Button variant="ghost" size="sm" className="hidden md:flex items-center gap-2">
@@ -68,21 +74,31 @@ export default function Header() {
             </Button>
           </Link>
 
-          <Link href="/login">
-            <Button variant="ghost" size="sm">
-              Log in
-            </Button>
-          </Link>
-          <Link href="/signup">
-            <Button variant="ghost" size="sm">
-              Sign up
-            </Button>
-          </Link>
+          {(isLoggedIn)? (
+            <Link href="/login">
+              <Button variant="ghost" size="sm" onClick={() => {setIsLoggedIn(false); localStorage.removeItem("token")}}>
+                Log out
+              </Button>
+            </Link>
+            ) : (
+            <>
+              <Link href="/login">
+                <Button variant="ghost" size="sm">
+                  Log in
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button variant="ghost" size="sm">
+                  Sign up
+                </Button>
+              </Link>
+            </>)}
+
           <Link href="/listings/new">
             <Button className="bg-blue-600 hover:bg-blue-700">List an item</Button>
           </Link>
 
-          <Link href={currentUser ? `/profile/${currentUser.username}` : "/login"}>
+          <Link href={currentUser ? `/profile` : "/login"}>
             <Button
               variant="ghost"
               size="icon"
