@@ -280,7 +280,7 @@ def get_profile():
     user_data = {
         "username": user.username,
         "password_hash": user.password_hash,
-        "created_at": user.created_at
+        "timestamp": user.created_at.isoformat()
     }
     return jsonify({"user": user_data}), 200
 

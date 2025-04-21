@@ -7,6 +7,7 @@ import { useAuth } from "@/app/context/AuthContext"
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginFailed, setLoginFailed] = useState(false);
   const { isLoggedIn, setIsLoggedIn } = useAuth(); // import global context variable & setter function
 
   const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +33,9 @@ export default function Login() {
         alert("Login Successful");
         window.location.href = "/";
         setIsLoggedIn(true);
+        setLoginFailed(false);
+      }else{
+        setLoginFailed(true);
       }
     } catch (error: any) {
       console.error(error.response?.data || error.message);
@@ -96,6 +100,14 @@ export default function Login() {
               Login
             </button>
           </form>
+
+          {loginFailed && (
+            <div className="mt-6 text-center">
+              <p className="text-sm text-red-600">
+                Login failed, please try again
+              </p>
+            </div>
+          )}
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
