@@ -15,7 +15,7 @@ class User(db.Model):
     username     = db.Column(db.String(80),  unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     created_at   = db.Column(db.DateTime, default=datetime.utcnow)
-
+    stripe_account_id = db.Column(db.String, nullable = True)
     products  = db.relationship("Product", backref="seller", lazy=True)
     reviews   = db.relationship("Review",  backref="author", lazy=True)
 
