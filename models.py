@@ -3,8 +3,11 @@ from datetime import datetime
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy import Float
 from pgvector.sqlalchemy import Vector
+from sqlalchemy import event
+from sentence_transformers import SentenceTransformer
 
 db = SQLAlchemy()
+embed_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 class User(db.Model):
     __tablename__ = "user"
@@ -41,6 +44,20 @@ class Product(db.Model):
     reviews = db.relationship("Review", backref="product", lazy=True)
     orders  = db.relationship("Order",  backref="product", lazy=True)
     vector = db.Column(Vector(384), nullable = True)
+
+@event.listens_for(Product, "before_insert")
+def embed_product(mapper, connection, target):
+    parts = [
+        target.title or "",
+        target.description or "",
+        target.category or "",
+        str(target.price) if target.price is not None else "",
+        target.image_url or "",
+        target.seller_username or "",
+    ]
+    text = " ".join(parts)
+    target.vector = embed_model.encode(text).tolist()
+   
 class Review(db.Model):
     __tablename__ = "review"
     id        = db.Column(db.Integer, primary_key=True)
