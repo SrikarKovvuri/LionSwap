@@ -330,12 +330,19 @@ def delete_profile():
 
     return jsonify({"message": "User deleted successfully"}), 200
 
+@market_ops.route("/current_user", methods = ['GET'])
+@jwt_required()
+def get_current_user():
+    user_id = get_jwt_identity()
 
+    user = User.query.get_or_404(user_id)
 
-# GET retrieved listings from VectorDB query
-@market_ops.route("/search", methods=["GET"])
-def vector_search(query):
-
-    listings = []
-
-    return jsonify(listings), 200
+    return jsonify({
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            
+            "createdAt": user.created_at.isoformat(),
+            "stripeAccountId": user.stripe_account_id
+        }
+    })
