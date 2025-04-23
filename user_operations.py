@@ -433,6 +433,14 @@ def get_num_notifications():
 @market_ops.route("/search", methods=["GET"])
 def vector_search(query):
 
-    listings = []
+    user = User.query.get_or_404(user_id)
 
-    return jsonify(listings), 200
+    return jsonify({
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            
+            "createdAt": user.created_at.isoformat(),
+            "stripeAccountId": user.stripe_account_id
+        }
+    })

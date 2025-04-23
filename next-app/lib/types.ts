@@ -4,6 +4,7 @@ export interface User {
   email: string
   password_hash: string
   timestamp: string
+  stripe_account_id: string
 }
 
 export interface Product {

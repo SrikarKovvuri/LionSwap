@@ -1,4 +1,6 @@
 from dotenv import load_dotenv
+# load environment variables
+load_dotenv(override = True)
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
@@ -7,17 +9,16 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
-
+import stripe
 from pgvector.psycopg2 import register_vector  # register pgvector adapter
 from models import db
-from stripe import stripe_bp
+
 from auth import auth_bp
 from cart import cart_bp
 from user_operations import market_ops
 from vectordb import vector_bp
 
-# load environment variables
-load_dotenv()
+
 
 # initialize Flask app
 app = Flask(__name__)
@@ -44,8 +45,9 @@ jwt = JWTManager(app)
 def _register_vector(dbapi_connection, connection_record):
     register_vector(dbapi_connection)
 
+from stripe_routes import stripe_bp
 # register blueprints
-app.register_blueprint(stripe_bp, url_prefix='/stripe')
+app.register_blueprint(stripe_bp)
 app.register_blueprint(market_ops)
 app.register_blueprint(auth_bp)
 app.register_blueprint(cart_bp)

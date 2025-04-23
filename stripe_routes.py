@@ -3,7 +3,10 @@ from models import User, db
 import stripe
 import os
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from dotenv import load_dotenv
 
+
+load_dotenv()
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 stripe_bp = Blueprint('stripe', __name__)
@@ -46,28 +49,49 @@ def create_checkout_session():
         return jsonify({"error": str(err)}), 400
 
 
-@stripe_bp.route("/onboard", methods=['POST'])
+@stripe_bp.route("/onboard", methods=['OPTIONS', 'POST'])
 @jwt_required()
 def onboard():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    # CORS preflight
+    if request.method == "OPTIONS":
+        return jsonify({}), 200
 
-    # If they already have a stripe_account_id, reuse it
+    user_id = get_jwt_identity()
+    user = User.query.get_or_404(user_id)
+
+    #change to actual url when frontend is hosted
+    BASE_URL = os.getenv("MARKETPLACE_URL", "https://discuss.python.org/t/installing-dotenv-vs-load-dotenv-why/51024")
+
     if user.stripe_account_id:
+        # Update their existing Express account so Stripe pre-fills the Website
+        stripe.Account.modify(
+            user.stripe_account_id,
+            business_profile={
+                "url": f"{BASE_URL}/seller/{user.id}"
+            },
+        )
         account_id = user.stripe_account_id
     else:
-        account = stripe.Account.create(type="express")
+        # First time: create the Express account with the Website baked in
+        account = stripe.Account.create(
+            type="express",
+            business_profile={
+                "url": f"{BASE_URL}/seller/{user.id}"
+            },
+        )
         account_id = account.id
         user.stripe_account_id = account_id
         db.session.commit()
 
-    account_link = stripe.AccountLink.create(
+    # Generate a fresh onboarding link
+    link = stripe.AccountLink.create(
         account=account_id,
-        refresh_url="http://localhost:3000/onboard/refresh",
-        return_url="http://localhost:3000/onboard/success",
-        type="account_onboarding"
+        refresh_url="http://localhost:3000/onboarding/refresh",
+        return_url="http://localhost:3000/onboarding/success",
+        type="account_onboarding",
     )
-    return jsonify({"url": account_link.url}), 200
+
+    return jsonify({"url": link.url}), 200
 
 
 @stripe_bp.route("/webhook", methods=['POST'])
