@@ -2,22 +2,43 @@
 "use client"
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button";
-import { notifications, products } from "@/lib/sample-data"
 import { Notification } from "@/lib/types"
 import { redirect } from "next/navigation"
 import { useAuth } from "@/app/context/AuthContext"
+import axios from "axios"
 
 import { formatDistanceToNow } from "date-fns";
 
 
 export default function NotificationsPage() {
 
-  const { isLoggedIn, setIsLoggedIn } = useAuth()
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const [ notifications, setNotifications ] = useState<Notification[]>([]);
 
   if(!isLoggedIn){
       redirect("/login")
   }
+
+  useEffect(() => {
+    async function fetchNotifications() {
+      try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get("http://localhost:5000/notifications/user", {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+          },
+          });
+          setNotifications(response.data.notifications)
+      } catch (err: any) {
+          console.log("fetch notifications (TypeScript) error", err.response?.data || err.message);
+          setNotifications([])
+      }
+    }
+    fetchNotifications()
+}, []);
 
   // Group notifications by date
   const today = new Date().setHours(0, 0, 0, 0);
@@ -40,9 +61,6 @@ export default function NotificationsPage() {
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Notifications</h1>
-        <Button variant="ghost" size="sm">
-          Mark all as read
-        </Button>
       </div>
 
       {/* Today's notifications */}

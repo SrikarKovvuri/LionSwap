@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import db, Product, Order, User
+from models import db, Product, Order, User, Notification
 
 market_ops = Blueprint("market_operations", __name__)
 
@@ -16,15 +16,16 @@ def get_listings():
     for p in products:
         listings.append({
             "id":           p.id,
-            "seller_id":    p.seller_id,
+            "sellerId":    p.seller_id,
+            "sellerUsername": p.seller_username,
             "title":        p.title,
             "description":  p.description,
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "image_url":    p.image_url,
-            "is_available": p.is_available,
-            "posted_at":    p.posted_at.isoformat() if p.posted_at else None
+            "imageUrl":    p.image_url,
+            "isAvailable": p.is_available,
+            "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
 
     return jsonify({"listings": listings}), 200
@@ -38,15 +39,16 @@ def get_listing(listing_id):
     
     listing = {
         "id":           product.id,
-        "seller_id":    product.seller_id,
+        "sellerId":    product.seller_id,
+        "sellerUsername":    product.seller_username,
         "title":        product.title,
         "description":  product.description,
         "price":        product.price,
         "category":     product.category,
         "condition":    product.condition,
-        "image_url":    product.image_url,
-        "is_available": product.is_available,
-        "posted_at":    product.posted_at.isoformat() if product.posted_at else None
+        "imageUrl":    product.image_url,
+        "isAvailable": product.is_available,
+        "timestamp":    product.posted_at.isoformat() if product.posted_at else None
     }
     return jsonify({"listing": listing}), 200
 
@@ -58,21 +60,54 @@ def get_listing_by_category(category):
     for p in products:
         listings.append({
             "id":           p.id,
-            "seller_id":    p.seller_id,
+            "sellerId":    p.seller_id,
+            "sellerUsername": p.seller_username,
             "title":        p.title,
             "description":  p.description,
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "image_url":    p.image_url,
-            "is_available": p.is_available,
-            "posted_at":    p.posted_at.isoformat() if p.posted_at else None
+            "imageUrl":    p.image_url,
+            "isAvailable": p.is_available,
+            "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
 
     return jsonify({"listings": listings}), 200
 
+# retrieve products of a specific username
+@market_ops.route('/listings/username/<username>', methods=['GET'])
+def get_listing_by_username(username):
+    user = User.query.filter_by(username=username)
+
+    if not user:
+        return jsonify({"listings": listings, "user": {}}), 401
+
+    products = Product.query.filter_by(seller_id=user.id).all()
+    listings = []
+    for p in products:
+        listings.append({
+            "id":           p.id,
+            "sellerId":    p.seller_id,
+            "sellerUsername": p.seller_username,
+            "title":        p.title,
+            "description":  p.description,
+            "price":        p.price,
+            "category":     p.category,
+            "condition":    p.condition,
+            "imageUrl":    p.image_url,
+            "isAvailable": p.is_available,
+            "timestamp":    p.posted_at.isoformat() if p.posted_at else None
+        })
+    
+    user_data = {
+        "username": user.username,
+        "password_hash": user.password_hash,
+        "timestamp": user.created_at.isoformat()
+    } 
+    return jsonify({"listings": listings, "user": user_data}), 200
+
 # retrieve products by a specific user
-@market_ops.route('/listings/specific/user', methods=['GET'])
+@market_ops.route('/listings/specific/user', methods=['GET', 'OPTIONS'])
 @jwt_required()
 def get_listing_by_user():
     if request.method == 'OPTIONS':
@@ -84,15 +119,16 @@ def get_listing_by_user():
     for p in products:
         listings.append({
             "id":           p.id,
-            "seller_id":    p.seller_id,
+            "sellerId":    p.seller_id,
+            "sellerUsername": p.seller_username,
             "title":        p.title,
             "description":  p.description,
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "image_url":    p.image_url,
-            "is_available": p.is_available,
-            "posted_at":    p.posted_at.isoformat() if p.posted_at else None
+            "imageUrl":    p.image_url,
+            "isAvailable": p.is_available,
+            "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
 
     return jsonify({"listings": listings}), 200
@@ -135,14 +171,15 @@ def create_listing():
         #build a response dict by hand: 
         listing_data = {
             "id":           product.id,
-            "seller_id":    product.seller_id,
+            "sellerId":    product.seller_id,
+            "sellerUsername": product.seller_username,
             "title":        product.title,
             "description":  product.description,
             "price":        product.price,
             "condition":    product.condition,
-            "image_url":    product.image_url,
-            "is_available": product.is_available,
-            "posted_at":    product.posted_at.isoformat(),
+            "imageUrl":    product.image_url,
+            "isAvailable": product.is_available,
+            "timestamp":    product.posted_at.isoformat(),
             "category":     product.category
         }
         return jsonify({"message": "Listing created", "listing": listing_data}), 201
@@ -176,14 +213,15 @@ def update_listing(listing_id):
     
     listing_data = {
         "id":           product.id,
-        "seller_id":    product.seller_id,
+        "sellerId":    product.seller_id,
+        "sellerUsername": product.seller_username,
         "title":        product.title,
         "description":  product.description,
         "price":        product.price,
         "condition":    product.condition,
         "image_url":    product.image_url,
-        "is_available": product.is_available,
-        "posted_at":    product.posted_at.isoformat(),
+        "isAvailable": product.is_available,
+        "timestamp":    product.posted_at.isoformat(),
         "category":     product.category
     }
 
@@ -238,9 +276,9 @@ def create_order():
         return jsonify({"error": "Database error: " + str(err)}), 500
     
     order_data = {
-        "buyer_id": buyer_id,
-        "product_id": product_id,
-        "ordered_at": ordered_at.isoformat(),
+        "buyerId": buyer_id,
+        "productId": product_id,
+        "timestamp": ordered_at.isoformat(),
         "status": "Pending"
     }
 
@@ -261,11 +299,30 @@ def get_order(order_id):
         return jsonify({"error": "Unauthorized to view this order"}), 403
     
     order_data = {
-        "buyer_id": order.buyer_id,
-        "product_id": order.product_id,
-        "ordered_at": order.ordered_at.isoformat(),
+        "buyerId": order.buyer_id,
+        "productId": order.product_id,
+        "timestamp": order.ordered_at.isoformat(),
         "status": order.status
     }
+
+    return jsonify({"order": order_data}), 200
+
+# Retrieve order details for specific user
+@market_ops.route('/orders/user/', methods=['GET', 'OPTIONS'])
+@jwt_required()
+def get_order_by_user():
+    user_id = get_jwt_identity()
+    orders = Order.query.filter_by(buyer_id=user_id).all()
+
+    order_data = []
+
+    for order in orders:
+        order_data.append({
+            "buyerId": order.buyer_id,
+            "productId": order.product_id,
+            "timestamp": order.ordered_at.isoformat(),
+            "status": order.status
+        })
 
     return jsonify({"order": order_data}), 200
 
@@ -330,6 +387,46 @@ def delete_profile():
 
     return jsonify({"message": "User deleted successfully"}), 200
 
+
+# retrieve products by a specific user
+@market_ops.route('/notifications/user', methods=['GET', 'OPTIONS'])
+@jwt_required()
+def get_notifications_by_user():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+    
+    user_id = get_jwt_identity()
+    notifications = Notification.query.filter_by(user_id=user_id).all()
+    notifs = []
+    for n in notifications:
+        notifs.append({
+            "id":           n.id,
+            "userId":      n.user_id,
+            "type":         n.type,
+            "title":        n.title,
+            "message":      n.message,
+            "timestamp":  n.received_at.isoformat() if n.received_at else None,
+            "read":         n.read,
+            "actionUrl":   n.action_url,
+            "senderId":    n.sender_id,
+            "productId":   n.product_id,
+            "imageUrl":    n.image_url
+        })
+
+    return jsonify({"notifications": notifs}), 200
+
+
+# retrieve products by a specific user
+@market_ops.route('/notifications/num', methods=['GET', 'OPTIONS'])
+@jwt_required()
+def get_num_notifications():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+    
+    user_id = get_jwt_identity()
+    notifications = Notification.query.filter_by(user_id=user_id).all()
+
+    return jsonify({"num": notifications.length}), 200
 
 
 # GET retrieved listings from VectorDB query

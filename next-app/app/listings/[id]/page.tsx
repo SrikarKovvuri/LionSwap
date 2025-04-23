@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import AddToCartButton from "@/components/ui/addToCartButton"
 import { notFound } from "next/navigation"
 import { Product } from "@/lib/types"
-import ProductGrid from "@/components/product-grid"
 import axios from "axios"
 
 
@@ -66,10 +65,9 @@ export default async function ProductPage(props: ProductPageProps) {
 
         <div className="md:w-1/2">
           <div className="mb-6">
-            <p className="text-sm text-gray-500 mb-1">New! Updated 1m ago</p>
             <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
-            <p className="text-3xl font-bold mb-4">${product.price.toFixed(2)}</p>
-            <p className="text-sm text-gray-500 mb-6">+$0.69 Buyer Protection fee</p>
+            <p className="text-3xl font-bold mb-2">${product.price.toFixed(2)}</p>
+            <p className="text-sm text-gray-500 mb-6">+ Buyer Protection Fee</p>
 
             <div className="flex gap-4 mb-6">
               <AddToCartButton itemId={product.id} itemName={product.title} itemPrice={product.price} itemImage={product.imageUrl} itemCategory={product.category}/>
@@ -103,32 +101,24 @@ export default async function ProductPage(props: ProductPageProps) {
             <h2 className="font-bold mb-2">Description</h2>
             <p className="text-sm text-gray-700 mb-6">{product.description}</p>
 
-            <div className="flex items-center gap-4 mb-6">
-              <Image
-                src="/placeholder.svg?height=40&width=40"
-                alt="Seller avatar"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-              <div>
-                <p className="font-medium">{product.sellerUsername}</p>
-                <p className="text-sm text-gray-500">Columbia University</p>
+            <Link href={`/profile/${product.sellerId}`}>
+              <div className="flex items-center gap-4 mb-6">
+                <Image
+                  src="/placeholder.svg?height=40&width=40"
+                  alt="Seller avatar"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <div>
+                  <p className="font-medium">{product.sellerUsername}</p>
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
 
-      <section>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">Similar items</h2>
-          <Link href={`/category/${product.category}`} className="text-blue-600 hover:underline">
-            See all
-          </Link>
-        </div>
-        {/* <ProductGrid products={relatedProducts} /> */}
-      </section>
     </div>
   )
 }

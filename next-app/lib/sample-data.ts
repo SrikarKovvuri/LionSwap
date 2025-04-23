@@ -4,13 +4,15 @@ export const users: User[] = [
   {
     id: 1,
     username: "alexj",
-    password: "hashedpassword1",
+    email: "davidxionghl@gmail.com",
+    password_hash: "hashedpassword1",
     timestamp: "2025-03-15T10:30:00Z"
   },
   {
     id: 2,
     username: "jamies",
-    password: "hashedpassword2",
+    email: "davidxionghl@gmail.com",
+    password_hash: "hashedpassword2",
     timestamp: "2025-03-18T14:45:00Z"
   }
 ]

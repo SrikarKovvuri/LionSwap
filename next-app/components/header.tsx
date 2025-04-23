@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Search, Bell, ShoppingCart, User } from "lucide-react"
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { users as rawUsers } from "@/lib/sample-data"
 import { useAuth } from "@/app/context/AuthContext"
+import axios from "axios"
 
 // Define exactly the fields we expect on a "demo" user
 type DemoUser = {
@@ -19,10 +20,11 @@ type DemoUser = {
 export default function Header() {
   const { isLoggedIn, setIsLoggedIn } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
+  const [numNotifs, setNumNotifs] = useState(0)
   const router = useRouter()
 
   // Cast your imported sample‑data into our DemoUser shape
-  const currentUser = (rawUsers[0] as unknown) as DemoUser
+  const currentUser = (rawUsers[0] as unknown) as DemoUser  // FIX THIS TO BE ACTUAL USER
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -30,6 +32,25 @@ export default function Header() {
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`)
     }
   }
+
+  useEffect(() => {
+    async function fetchNumNotifs() {
+      try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get("http://localhost:5000/notifications/num", {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+          },
+          });
+          setNumNotifs(response.data.num)
+      } catch (err: any) {
+          console.log("fetch number of notifications (TypeScript) error", err.response?.data || err.message);
+          setNumNotifs(0)
+      }
+    }
+    fetchNumNotifs()
+  }, []);
 
   return (
     <header className="border-b">
@@ -60,9 +81,11 @@ export default function Header() {
                 className="hidden md:flex items-center gap-2 relative"
               >
                 <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  3
-                </span>
+
+                {(numNotifs > 0) && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {numNotifs}
+                </span>}
+
               </Button>
             </Link>
             ) : (

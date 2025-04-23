@@ -33,7 +33,7 @@ class Product(db.Model):
     title       = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
     price       = db.Column(db.Float, nullable=False)
-    category   = db.Column(db.String(50), nullable=False)
+    category    = db.Column(db.String(50), nullable=False)
     condition   = db.Column(db.String(50), nullable=False)
     image_url   = db.Column(db.String(250))
     posted_at   = db.Column(db.DateTime, default=datetime.utcnow)

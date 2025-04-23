@@ -9,7 +9,7 @@ export default function SignUp() {
   const [password, setPassword] = useState<string>("");
   const [errorNum, setErrorNum] = useState<number>(0);
   const [correctPasscode, setCorrectPasscode] = useState<string>("a");
-  const [enteredPasscode, setEnteredPasscode] = useState<string>("z");
+  const [enteredPasscode, setEnteredPasscode] = useState<string>("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -61,10 +61,10 @@ export default function SignUp() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-2">
       <div className="container mx-auto px-4 py-8 max-w-lg">
         <main>
-          <div className="bg-white rounded-lg shadow p-8">
+          <div className="bg-slate-100 rounded-lg shadow p-8">
             <div className="text-center mb-6">
               <h1 className="text-3xl font-bold mb-2">Create Account</h1>
               <p className="text-gray-600">Sign up to get started</p>
@@ -111,7 +111,7 @@ export default function SignUp() {
                   minLength={5}
                   maxLength={35}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your email (5-35 characters)"
+                  placeholder="Enter your Columbia email (5-35 characters)"
                 />
               </div>
 
@@ -175,7 +175,7 @@ export default function SignUp() {
       {(errorNum===201) && (
         <div className="container mx-auto px-4 py-8 max-w-lg">
           <main>
-            <div className="bg-white rounded-lg shadow p-8">
+            <div className="bg-slate-100 rounded-lg shadow p-8">
               <div className="text-center mb-6">
                 <h1 className="text-3xl font-bold mb-2">Confirm Your Email</h1>
                 <p className="text-gray-600">verification code sent to {email}</p>
@@ -194,7 +194,7 @@ export default function SignUp() {
                   <input
                     type="text"
                     id="passcode"
-                    value={username}
+                    value={enteredPasscode}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setEnteredPasscode(e.target.value)
                     }
@@ -205,6 +205,12 @@ export default function SignUp() {
                     placeholder="Enter Code"
                   />
                 </div>
+                <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
+              >
+                Confirm
+              </button>
               </form>
             </div>
           </main>
