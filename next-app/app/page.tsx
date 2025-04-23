@@ -50,7 +50,7 @@ export default async function Home() {
       <section className="mb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Textbooks</h2>
-          <Link href="/category/textbooks" className="text-blue-600 hover:underline">
+          <Link href="/category/Textbooks" className="text-blue-600 hover:underline">
             See all
           </Link>
         </div>
@@ -60,7 +60,7 @@ export default async function Home() {
       <section className="mb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Electronics</h2>
-          <Link href="/category/electronics" className="text-blue-600 hover:underline">
+          <Link href="/category/Electronics" className="text-blue-600 hover:underline">
             See all
           </Link>
         </div>
@@ -70,7 +70,7 @@ export default async function Home() {
       <section>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Clothing</h2>
-          <Link href="/category/clothing" className="text-blue-600 hover:underline">
+          <Link href="/category/Clothing" className="text-blue-600 hover:underline">
             See all
           </Link>
         </div>

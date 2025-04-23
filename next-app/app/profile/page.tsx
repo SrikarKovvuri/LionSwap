@@ -5,17 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ProductGrid from "@/components/product-grid"
 import axios from "axios"
-import { notFound, redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 import { useAuth } from "@/app/context/AuthContext"
 import { User, Product } from "@/lib/types"
 
-interface ProfilePageProps {
-  params: {
-    id: number
-  }
-}
 
-export default function ProfilePage({ params }: ProfilePageProps) {
+export default function ProfilePage() {
   
   const { isLoggedIn, setIsLoggedIn } = useAuth()
 
@@ -26,43 +21,45 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const [user, setUser] = useState<User>();
   const [products, setProducts] = useState<Product[]>([])
 
-    useEffect(() => {
-        async function fetchUser() {
-            try {
-                const token = localStorage.getItem("token");
-                const response = await axios.get("http://localhost:5000/users/profile", {
-                headers: {
-                    Authorization: `Bearer ${token}`, // token inherently has userId, no need to pass it in
-                    "Content-Type": "application/json",
-                },
-                });
-                setUser(response.data.user);
-            } catch (err: any) {
-                console.log("getUser(TypeScript) error", err.response?.data || err.message);
-            }
-        }
-        async function fetchProducts() {
+  useEffect(() => {
+      async function fetchUser() {
           try {
               const token = localStorage.getItem("token");
-              const response = await axios.get("http://localhost:5000/listings/specific/user", {
+              const response = await axios.get("http://localhost:5000/users/profile", {
               headers: {
                   Authorization: `Bearer ${token}`, // token inherently has userId, no need to pass it in
                   "Content-Type": "application/json",
               },
               });
-              setProducts(response.data.listings);
+              setUser(response.data.user);
           } catch (err: any) {
-              console.log("getProducts(TypeScript) error", err.response?.data || err.message);
+              console.log("getUser(TypeScript) error", err.response?.data || err.message);
           }
       }
-        
-      fetchUser();
-      fetchProducts();
-    }, []);
+      async function fetchProducts() {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get("http://localhost:5000/listings/specific/user", {
+            headers: {
+                Authorization: `Bearer ${token}`, // token inherently has userId, no need to pass it in
+                "Content-Type": "application/json",
+            },
+            });
+            setProducts(response.data.listings);
+        } catch (err: any) {
+            console.log("getProducts(TypeScript) error", err.response?.data || err.message);
+        }
+    }
+      
+    fetchUser();
+    fetchProducts();
+  }, []);
 
 
   if (!user) {
-    notFound()
+    return (
+      <h1>This user does not exist.</h1>
+    )
   }
 
   const activeListings = products.filter((p) => p.isAvailable === true)
