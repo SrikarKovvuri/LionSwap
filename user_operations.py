@@ -77,10 +77,11 @@ def get_listing_by_category(category):
 # retrieve products of a specific username
 @market_ops.route('/listings/username/<username>', methods=['GET'])
 def get_listing_by_username(username):
-    user = User.query.filter_by(username=username)
+    print("/" + username + "/")
+    user = User.query.filter_by(username=username).first()
 
     if not user:
-        return jsonify({"listings": listings, "user": {}}), 401
+        return jsonify({"listings": {}, "user": {}}), 401
 
     products = Product.query.filter_by(seller_id=user.id).all()
     listings = []

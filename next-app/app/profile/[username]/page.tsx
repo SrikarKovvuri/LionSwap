@@ -76,7 +76,10 @@ export default async function ProfilePage(props: ProfilePageProps) {
           <Tabs defaultValue="listings">
             <TabsList className="w-full mb-6">
               <TabsTrigger value="listings" className="flex-1">
-                My Listings
+                Listings
+              </TabsTrigger>
+              <TabsTrigger value="sold" className="flex-1">
+                Sold Listings
               </TabsTrigger>
             </TabsList>
 
@@ -86,6 +89,16 @@ export default async function ProfilePage(props: ProfilePageProps) {
               ) : (
                 <div className="text-center py-12">
                   <p className="text-gray-500">No active listings</p>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="sold">
+              {soldListings.length > 0 ? (
+                <ProductGrid products={soldListings} />
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">No sold items</p>
                 </div>
               )}
             </TabsContent>

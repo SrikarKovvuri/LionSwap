@@ -101,7 +101,7 @@ export default async function ProductPage(props: ProductPageProps) {
             <h2 className="font-bold mb-2">Description</h2>
             <p className="text-sm text-gray-700 mb-6">{product.description}</p>
 
-            <Link href={`/profile/${product.sellerId}`}>
+            <Link href={`/profile/${product.sellerUsername}`}>
               <div className="flex items-center gap-4 mb-6">
                 <Image
                   src="/placeholder.svg?height=40&width=40"

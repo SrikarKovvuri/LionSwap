@@ -49,7 +49,9 @@ export default function Header() {
           setNumNotifs(0)
       }
     }
-    fetchNumNotifs()
+    if(isLoggedIn){
+      fetchNumNotifs()
+    }
   }, []);
 
   return (
@@ -74,6 +76,7 @@ export default function Header() {
 
         <div className="flex items-center gap-4">
           {(isLoggedIn)? (
+            <>
             <Link href="/notifications">
               <Button
                 variant="ghost"
@@ -88,14 +91,15 @@ export default function Header() {
 
               </Button>
             </Link>
+
+            <Link href="/cart">
+              <Button variant="ghost" size="sm" className="hidden md:flex items-center gap-2">
+                <ShoppingCart className="h-5 w-5" />
+              </Button>
+            </Link>
+            </>
             ) : (
             <></>)}
-
-          <Link href="/cart">
-            <Button variant="ghost" size="sm" className="hidden md:flex items-center gap-2">
-              <ShoppingCart className="h-5 w-5" />
-            </Button>
-          </Link>
 
           {(isLoggedIn)? (
             <Link href="/login">
