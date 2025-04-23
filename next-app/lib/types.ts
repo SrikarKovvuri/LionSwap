@@ -3,6 +3,7 @@ export interface User {
   username: string
   password: string
   timestamp: string
+  stripe_account_id: string
 }
 
 export interface Product {

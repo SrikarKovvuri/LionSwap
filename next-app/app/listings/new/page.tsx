@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import axios from "axios"
 import { useRouter, redirect } from "next/navigation"
 import { Camera } from "lucide-react"
@@ -15,13 +15,46 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
+import type { User } from "@/lib/types";
 
 export default function NewListingPage() {
   const router = useRouter()
-  const { isLoggedIn, setIsLoggedIn } = useAuth()
-
+  const { isLoggedIn, user, refetchUser} = useAuth()
+  const [stripeOnboardUrl, setStripeOnboardUrl] = useState<string | null>(null)
+  const [loadingOnboard, setLoadingOnboard] = useState(false);
+  
   if(!isLoggedIn){
     redirect("/login")
+  }
+
+  useEffect(() => {
+    if (user && !user.stripe_account_id) {
+      setLoadingOnboard(true);
+      const token = localStorage.getItem("token");
+      axios
+        .post(
+          "http://localhost:5000/onboard",
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then((res) => {
+          // send them into Stripe Express flow
+          window.location.href = res.data.url;
+        })
+        .catch((err) => {
+          console.error("Onboarding failed", err);
+          alert("Could not start Stripe onboarding. Please try again.");
+        });
+    }
+  }, [user]);
+
+  // 3) While onboarding, show a loader
+  if (loadingOnboard || (user && !user.stripe_account_id)) {
+    return (
+      <div className="p-8 text-center">
+        <p>Redirecting you to connect your Stripe account…</p>
+      </div>
+    );
   }
 
   // -- form state --
@@ -210,3 +243,5 @@ export default function NewListingPage() {
     </div>
   )
 }
+
+
