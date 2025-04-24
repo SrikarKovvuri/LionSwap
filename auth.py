@@ -57,6 +57,9 @@ def confirm_credentials():
     email = request.json.get("email")
     password = request.json.get("password")
 
+    if email[len(email)-13:] != "@columbia.edu":  # check for @columbia.edu
+        return jsonify({"error": "Email must be @columbia.edu"}), 401
+
     if not username or not password or not email:
         return jsonify({"error": "Username, Email, and Password are required"}), 402
     
@@ -65,7 +68,9 @@ def confirm_credentials():
     
     passcode = random.randint(100000, 999999)
 
-    send_email(email, "LionSwap Account Verification", "Here is your passcode: " + str(passcode))
+    disclaimer = "LionSwap will never email you and ask you to disclose or verify your password, credit card, or banking account number. If you receive a suspicious email with a link to update your account information, do not click on the link. Instead, report the e-mail to LionSwap for investigation."
+
+    send_email(email, "LionSwap Account Verification", "Here is your passcode: " + str(passcode) + "\n" + disclaimer)
     
     return jsonify({
         "message": "Confirmed Credentials",

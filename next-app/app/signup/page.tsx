@@ -48,12 +48,6 @@ export default function SignUp() {
         setCorrectPasscode(String(response.data.passcode));
       }
 
-      // use Python to generate random 6-digit number for password
-      // confirm_credentials backend function must return the passcode to frontend in JSON
-      // frontend will store it in a state for "correct passcode"
-
-      // confirm_credentials backend function must use Gmail API to send the verification code
-
     } catch (error: any) {
       const status = error.response?.status;
       setErrorNum(status);
@@ -145,20 +139,25 @@ export default function SignUp() {
               </button>
             </form>
 
+            {(errorNum===401) && (<div className="mt-3 text-center">
+              <p className="text-sm text-red-500">
+                Email must be @columbia.edu
+              </p>
+            </div>)}
 
-            {(errorNum===402) && (<div className="mt-6 text-center">
+            {(errorNum===402) && (<div className="mt-3 text-center">
               <p className="text-sm text-red-500">
                 Username, Email, and Password are required
               </p>
             </div>)}
 
-            {(errorNum===403) && (<div className="mt-6 text-center">
+            {(errorNum===403) && (<div className="mt-3 text-center">
               <p className="text-sm text-red-500">
                 Username is already taken
               </p>
             </div>)}
 
-            <div className="mt-6 text-center">
+            <div className="mt-3 text-center">
               <p className="text-sm text-gray-600">
                 Already have an account? {" "}
                 <Link href="/login">

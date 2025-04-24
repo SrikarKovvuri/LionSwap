@@ -1,7 +1,6 @@
 "use client"
 import Image from "next/image"
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ProductGrid from "@/components/product-grid"
 import OrderGrid from "@/components/order-grid"
@@ -15,7 +14,7 @@ export default function ProfilePage() {
   const { isLoggedIn, setIsLoggedIn } = useAuth()
 
   if(!isLoggedIn){
-      redirect("/login")
+    redirect("/login")
   }
 
   const [user, setUser] = useState<User>();
@@ -55,10 +54,9 @@ export default function ProfilePage() {
     fetchProducts();
   }, []);
 
-
   if (!user) {
     return (
-      <h1>This user does not exist.</h1>
+        <h1>This user does not exist.</h1>
     )
   }
 

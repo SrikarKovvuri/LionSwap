@@ -125,7 +125,7 @@ export default function Header() {
             <Button className="bg-blue-600 hover:bg-blue-700">List an item</Button>
           </Link>
 
-          <Link href={`/profile/personal`}>
+          <Link href={`/personal`}>
             <Button
               variant="ghost"
               size="icon"
