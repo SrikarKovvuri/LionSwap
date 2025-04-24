@@ -32,6 +32,30 @@ export default function CartClient() {
         fetchCartItems();
     }, []);
 
+    const handleCheckout = async() => {
+        try {
+            const token = localStorage.getItem("token");
+            if(!token) throw new Error("Not logged in");
+            const items: { title: string; price: number, sellerAccount: string } [] = [];
+            for( let i = 0; i < cartItems.length; i++) {
+                items.push({
+                    title: cartItems[i].title,
+                    price: cartItems[i].price,
+                    sellerAccount: cartItems[i].sellerAccount
+                })
+            }
+            const response = await axios.post(
+                "http://localhost:5000/create-checkout-session",
+                { items },
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+            
+              window.location.href = response.data.url;
+        }
+        catch(error) {
+            alert("Payment could not go through. Please try again");
+        }
+    }
 
     const removeFromCart = async (itemId: number) => {
         try {
@@ -121,7 +145,7 @@ export default function CartClient() {
                     <span>Total</span>
                     <span>${calculateTotal()}</span>
                     </div>
-                    <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md font-medium">
+                    <button onClick = {handleCheckout}className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md font-medium">
                     Checkout
                     </button>
                     <Link href="/">

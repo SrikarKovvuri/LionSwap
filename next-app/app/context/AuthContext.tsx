@@ -1,4 +1,3 @@
-// app/context/AuthContext.tsx
 'use client';
 
 import React, {
@@ -7,17 +6,22 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  Dispatch,
+  SetStateAction,
 } from 'react';
 import axios from 'axios';
 import type { User } from '@/lib/types';
 
+
 interface AuthContextType {
   isLoggedIn: boolean;
-  isLoading: boolean;          // ← new
+  isLoading: boolean;         
   user: User | null;
   refetchUser: () => Promise<void>;
+  setUser: Dispatch<SetStateAction<User | null>>
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>
 }
-
+     
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -52,7 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, isLoading, user, refetchUser }}
+      value={{ isLoggedIn, isLoading, user, refetchUser, setUser, setIsLoggedIn }}
     >
       {children}
     </AuthContext.Provider>

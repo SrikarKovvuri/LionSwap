@@ -52,4 +52,5 @@ export interface CartItem {
   price: number;
   imageUrl: string;
   timestamp: string;
+  sellerAccount: string
 }

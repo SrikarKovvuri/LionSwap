@@ -346,3 +346,4 @@ def get_current_user():
             "stripeAccountId": user.stripe_account_id
         }
     })
+    

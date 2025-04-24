@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, json
 from models import User, db
 import stripe
 import os
@@ -15,104 +15,103 @@ stripe_bp = Blueprint('stripe', __name__)
 @jwt_required()
 def create_checkout_session():
     try:
-        data = request.get_json()                  # ← use get_json(), not request.json()
-        price = int(data["price"] * 100)           # ← convert dollars to cents
-        seller_account_id = data["sellerAccount"]
-        platform_fee_cents = int(0.9 * price)      # ← your 90% cut in cents
+        payload = request.get_json()                  # { items: [ { price, title, sellerAccount } ] }
+        items = payload.get("items", [])
+        if not items:
+            return jsonify({"error": "No items provided"}), 400
 
-        # line_items must be a list of dicts
+        # only support one item for now:
+        item = items[0]
+        price_cents = int(item["price"] * 100)        # dollars → cents
+        seller_account_id = item["sellerAccount"]
+        platform_fee_cents = int(price_cents * 0.10)   # e.g. 10% platform fee
+
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             mode="payment",
             line_items=[{
                 "price_data": {
                     "currency": "usd",
-                    "product_data": {"name": data.get("productName", "Item")},
-                    "unit_amount": price
+                    "product_data": {"name": item.get("title", "Item")},
+                    "unit_amount": price_cents,
                 },
-                "quantity": 1
+                "quantity": 1,
             }],
             payment_intent_data={
                 "application_fee_amount": platform_fee_cents,
-                "transfer_data": {
-                    "destination": seller_account_id,
-                },
+                "transfer_data": {"destination": seller_account_id},
             },
-            success_url="http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url="http://localhost:3000/cancel",
+            success_url="http://localhost:3000/payment/success?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url="http://localhost:3000/payment/cancel",
         )
+
         return jsonify({"url": session.url}), 200
 
     except Exception as err:
-        import traceback
-        traceback.print_exc()
+        print(err)
         return jsonify({"error": str(err)}), 400
 
-
-@stripe_bp.route("/onboard", methods=['OPTIONS', 'POST'])
+@stripe_bp.route("/onboard", methods=["OPTIONS", "POST"])
 @jwt_required()
 def onboard():
-    # CORS preflight
+    # 1) CORS preflight
     if request.method == "OPTIONS":
         return jsonify({}), 200
 
-    user_id = get_jwt_identity()
-    user = User.query.get_or_404(user_id)
+    user = User.query.get_or_404(get_jwt_identity())
 
-    #change to actual url when frontend is hosted
+    # where to send them afterwards
     BASE_URL = os.getenv("MARKETPLACE_URL", "https://discuss.python.org/t/installing-dotenv-vs-load-dotenv-why/51024")
 
-    if user.stripe_account_id:
-        # Update their existing Express account so Stripe pre-fills the Website
-        stripe.Account.modify(
-            user.stripe_account_id,
-            business_profile={
-                "url": f"{BASE_URL}/seller/{user.id}"
-            },
-        )
-        account_id = user.stripe_account_id
-    else:
-        # First time: create the Express account with the Website baked in
-        account = stripe.Account.create(
+    # 2) Make sure we have a Stripe account ID
+    if not user.stripe_account_id:
+        acct = stripe.Account.create(
             type="express",
-            business_profile={
-                "url": f"{BASE_URL}/seller/{user.id}"
-            },
+            business_profile={"url": f"{BASE_URL}/seller/{user.id}"},
         )
-        account_id = account.id
-        user.stripe_account_id = account_id
+        user.stripe_account_id = acct.id
         db.session.commit()
+    else:
+        # retrieve the existing account
+        acct = stripe.Account.retrieve(user.stripe_account_id)
+        # update their business_profile in case your URL changed
+        stripe.Account.modify(
+            acct.id,
+            business_profile={"url": f"{BASE_URL}/seller/{user.id}"},
+        )
 
-    # Generate a fresh onboarding link
+    # 3) If they can already charge, nothing to do
+    if acct.charges_enabled:
+        return jsonify({"url": None}), 200
+
+    # 4) Otherwise generate an onboarding link
     link = stripe.AccountLink.create(
-        account=account_id,
-        refresh_url="http://localhost:3000/onboarding/refresh",
-        return_url="http://localhost:3000/onboarding/success",
+        account=acct.id,
+        refresh_url=f"{BASE_URL}/onboarding/refresh",
+        return_url=f"{BASE_URL}/onboarding/success",
         type="account_onboarding",
     )
-
     return jsonify({"url": link.url}), 200
 
 
-@stripe_bp.route("/webhook", methods=['POST'])
+@stripe_bp.route("/webhook", methods=["POST"])
 def stripe_webhook():
     payload = request.data
-    sig_header = request.headers.get("Stripe-Signature")
-    webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
+    sig_header = request.headers["Stripe-Signature"]
+    event = stripe.Webhook.construct_event(payload, sig_header, WEBHOOK_SECRET)
 
-    try:
-        event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
-    except stripe.error.SignatureVerificationError:
-        return "Invalid signature", 400
-
-    # Process relevant events.
     if event["type"] == "checkout.session.completed":
-        session = event["data"]["object"]
-        # mark_order_paid(session["id"])
-        print("Payment succeeded for session", session["id"])
-    elif event["type"] == "charge.refunded":
-        charge = event["data"]["object"]
-        print("Charge was refunded:", charge["id"])
-    # …handle other events as needed.
+        sess = event["data"]["object"]
+        items = json.loads(sess["metadata"]["items"])
 
+        # For each item: transfer the seller’s share
+        for it in items:
+            amount = int(it["price"] * 100)
+            seller = it["sellerAccount"]
+            stripe.Transfer.create(
+                amount=amount,
+                currency="usd",
+                destination=seller,
+                source_transaction=sess["payment_intent"],
+            )
     return "", 200
