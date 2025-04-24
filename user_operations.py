@@ -427,13 +427,15 @@ def get_num_notifications():
     user_id = get_jwt_identity()
     notifications = Notification.query.filter_by(user_id=user_id).all()
 
-    return jsonify({"num": notifications.length}), 200
+    return jsonify({"num": len(notifications)}), 200
 
 
 # GET retrieved listings from VectorDB query
 @market_ops.route("/search", methods=["GET"])
+@jwt_required()
 def vector_search(query):
 
+    user_id = get_jwt_identity()
     user = User.query.get_or_404(user_id)
 
     return jsonify({

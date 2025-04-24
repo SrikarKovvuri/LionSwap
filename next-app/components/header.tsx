@@ -41,7 +41,7 @@ export default function Header() {
           headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
-          },
+            },
           });
           setNumNotifs(response.data.num)
       } catch (err: any) {
@@ -52,7 +52,7 @@ export default function Header() {
     if(isLoggedIn){
       fetchNumNotifs()
     }
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <header className="border-b">
@@ -125,7 +125,7 @@ export default function Header() {
             <Button className="bg-blue-600 hover:bg-blue-700">List an item</Button>
           </Link>
 
-          <Link href={currentUser ? `/profile` : "/login"}>
+          <Link href={`/profile/personal`}>
             <Button
               variant="ghost"
               size="icon"

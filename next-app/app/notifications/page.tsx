@@ -142,83 +142,81 @@ function NotificationCard({ notification }: { notification: Notification }) {
   };
 
   return (
-    <Link href={notification.actionUrl || "#"}>
-      <div className={`p-4 rounded-lg border ${notification.read ? 'bg-white' : 'bg-blue-50'} hover:bg-gray-50 transition-colors`}>
-        <div className="flex items-start gap-4">
-          {/* Avatar or notification icon */}
-          <div className="flex-shrink-0">
-            {notification.senderId ? (
-              <div className="h-10 w-10 rounded-full overflow-hidden">
+    <div className={`p-4 rounded-lg border ${notification.read ? 'bg-white' : 'bg-blue-50'} hover:bg-gray-50 transition-colors`}>
+      <div className="flex items-start gap-4">
+        {/* Avatar or notification icon */}
+        <div className="flex-shrink-0">
+          {notification.senderId ? (
+            <div className="h-10 w-10 rounded-full overflow-hidden">
+              <Image
+                src={getSenderAvatar(notification.senderId)} // Now using a function to get avatar by ID
+                alt={`User ${notification.senderId}`}
+                width={40}
+                height={40}
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <Image
+                src={getNotificationIcon()}
+                alt="Notification"
+                width={24}
+                height={24}
+              />
+            </div>
+          )}
+        </div>
+        
+        {/* Notification content */}
+        <div className="flex-grow">
+          <div className="flex justify-between items-start">
+            <h3 className={`font-medium ${notification.read ? 'text-gray-700' : 'text-black'}`}>
+              {notification.title}
+            </h3>
+            <span className="text-xs text-gray-500">
+              {formatDistanceToNow(new Date(notification.timestamp), { addSuffix: true })}
+            </span>
+          </div>
+          <p className="text-gray-600 text-sm mt-1">{notification.message}</p>
+          
+          {/* Item preview (if applicable) */}
+          {notification.itemImage && (
+            <div className="mt-3 flex items-center gap-3 bg-gray-50 p-2 rounded">
+              <div className="h-10 w-10 bg-gray-200 rounded overflow-hidden">
                 <Image
-                  src={getSenderAvatar(notification.senderId)} // Now using a function to get avatar by ID
-                  alt={`User ${notification.senderId}`}
+                  src={notification.itemImage}
+                  alt={notification.title || "Item"}
                   width={40}
                   height={40}
                   className="object-cover"
                 />
               </div>
-            ) : (
-              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                <Image
-                  src={getNotificationIcon()}
-                  alt="Notification"
-                  width={24}
-                  height={24}
-                />
-              </div>
-            )}
-          </div>
-          
-          {/* Notification content */}
-          <div className="flex-grow">
-            <div className="flex justify-between items-start">
-              <h3 className={`font-medium ${notification.read ? 'text-gray-700' : 'text-black'}`}>
+              <span className="text-sm text-gray-700">
                 {notification.title}
-              </h3>
-              <span className="text-xs text-gray-500">
-                {formatDistanceToNow(new Date(notification.timestamp), { addSuffix: true })}
               </span>
             </div>
-            <p className="text-gray-600 text-sm mt-1">{notification.message}</p>
-            
-            {/* Item preview (if applicable) */}
-            {notification.itemImage && (
-              <div className="mt-3 flex items-center gap-3 bg-gray-50 p-2 rounded">
-                <div className="h-10 w-10 bg-gray-200 rounded overflow-hidden">
-                  <Image
-                    src={notification.itemImage}
-                    alt={notification.title || "Item"}
-                    width={40}
-                    height={40}
-                    className="object-cover"
-                  />
-                </div>
-                <span className="text-sm text-gray-700">
-                  {notification.title}
-                </span>
-              </div>
-            )}
-            
-            {/* Action buttons for specific notification types */}
-            {notification.type === "offer" && (
-              <div className="mt-3 flex gap-2">
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 px-3 py-1 h-auto text-sm">
-                  Accept
-                </Button>
-                <Button size="sm" variant="outline" className="px-3 py-1 h-auto text-sm">
-                  Decline
-                </Button>
-              </div>
-            )}
-          </div>
+          )}
           
-          {/* Unread indicator */}
-          {!notification.read && (
-            <div className="flex-shrink-0 w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+          {/* Action buttons for specific notification types */}
+          {notification.type === "offer" && (
+            <div className="mt-3 flex gap-2">
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 px-3 py-1 h-auto text-sm">
+                Accept
+              </Button>
+              <Button size="sm" variant="outline" className="px-3 py-1 h-auto text-sm">
+                Decline
+              </Button>
+            </div>
           )}
         </div>
+        
+        {/* Unread indicator */}
+        {!notification.read && (
+          <div className="flex-shrink-0 w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
+        )}
       </div>
-    </Link>
+    </div>
   );
 }
 

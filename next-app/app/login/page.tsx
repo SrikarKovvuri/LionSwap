@@ -68,7 +68,7 @@ export default function Login() {
                 onChange={handleUsername}
                 required
                 minLength={6}
-                maxLength={10}
+                maxLength={16}
                 placeholder="Enter your username"
               />
             </div>
@@ -88,7 +88,7 @@ export default function Login() {
                 onChange={handlePassword}
                 required
                 minLength={6}
-                maxLength={10}
+                maxLength={16}
                 placeholder="Enter your password"
               />
             </div>
