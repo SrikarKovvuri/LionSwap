@@ -10,7 +10,7 @@
 # production
 /build
 
-pycache/
+/__pycache__
 
 # debug
 npm-debug.log*
