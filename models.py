@@ -14,6 +14,7 @@ class User(db.Model):
     id           = db.Column(db.Integer, primary_key=True)
     username     = db.Column(db.String(80),  unique=True, nullable=False)
     email        = db.Column(db.String(100), unique=True, nullable=True)
+    phone        = db.Column(db.String(12), unique=True, nullable=True)
     password_hash = db.Column(db.String(256), nullable=False)
     created_at   = db.Column(db.DateTime, default=datetime.utcnow)
     stripe_account_id = db.Column(db.String, nullable = True)

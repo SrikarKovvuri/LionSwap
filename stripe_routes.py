@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, json
 from models import User, db
+from auth import send_email
 import stripe
 import os
 from flask_jwt_extended import get_jwt_identity, jwt_required
@@ -57,6 +58,12 @@ def create_checkout_session():
             success_url="http://localhost:3000/payment/success?session_id={CHECKOUT_SESSION_ID}",
             cancel_url="http://localhost:3000/payment/cancel",
         )
+
+        buyer_id = get_jwt_identity()
+        buyer = User.query.get(buyer_id)
+        seller = User.query.filter_by(seller_account_id=seller_account_id)
+
+        send_email(buyer.email, "Seller Contact Info for " + item["title"], "Seller Phone Number: " + seller.phone + "\n\n" + "Seller Email: " + seller.email)
 
         return jsonify({"url": session.url}), 200
 

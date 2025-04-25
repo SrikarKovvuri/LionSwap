@@ -6,6 +6,7 @@ import Link from "next/link";
 export default function SignUp() {
   const [username, setUsername] = useState<string>("");
   const [ email, setEmail ] = useState<string>("");
+  const [ phone, setPhone ] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorNum, setErrorNum] = useState<number>(0);
   const [correctPasscode, setCorrectPasscode] = useState<string>("a");
@@ -19,6 +20,7 @@ export default function SignUp() {
           username,
           email,
           password,
+          phone,
         }
       );
       if (response.status === 201) {
@@ -41,6 +43,7 @@ export default function SignUp() {
           username,
           email,
           password,
+          phone,
         }
       );
       if (response.status === 201) {
@@ -109,6 +112,28 @@ export default function SignUp() {
                 />
               </div>
 
+              <div className="mb-4">
+                <label 
+                  htmlFor="email" 
+                  className="block text-sm font-medium mb-2"
+                >
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  id="phone"
+                  value={phone}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPhone(e.target.value)
+                  }
+                  required
+                  minLength={5}
+                  maxLength={12}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter your phone number (5-12 characters)"
+                />
+              </div>
+
               <div className="mb-6">
                 <label
                   htmlFor="password"
@@ -160,6 +185,12 @@ export default function SignUp() {
             {(errorNum===404) && (<div className="mt-3 text-center">
               <p className="text-sm text-red-500">
                 Email is already taken.
+              </p>
+            </div>)}
+
+            {(errorNum===405) && (<div className="mt-3 text-center">
+              <p className="text-sm text-red-500">
+                Phone number is already taken.
               </p>
             </div>)}
 
