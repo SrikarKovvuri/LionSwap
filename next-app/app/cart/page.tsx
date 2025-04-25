@@ -4,7 +4,7 @@ import { useAuth } from "@/app/context/AuthContext"
 import { redirect } from "next/navigation"
 
 export default async function ShoppingCart() {
-  const { isLoggedIn, setIsLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuth()
 
   if(!isLoggedIn){
     redirect("/login")
