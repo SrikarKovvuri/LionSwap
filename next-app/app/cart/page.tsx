@@ -3,7 +3,7 @@ import CartClient from "@/components/cartClient"
 import { useAuth } from "@/app/context/AuthContext"
 import { redirect } from "next/navigation"
 
-export default async function ShoppingCart() {
+export default function ShoppingCart() {
   const { isLoggedIn, setIsLoggedIn } = useAuth()
 
   if(!isLoggedIn){
