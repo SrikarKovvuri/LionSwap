@@ -37,7 +37,7 @@ export default async function Home() {
           </div>
           <div className="w-full md:w-1/3">
             <Image
-              src="/placeholder.svg?height=300&width=300"
+              src="/LionSwapLogo2.png"
               alt="Columbia students trading items"
               width={300}
               height={300}

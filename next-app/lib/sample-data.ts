@@ -6,6 +6,7 @@ export const users: User[] = [
     username: "alexj",
     email: "davidxionghl@gmail.com",
     password_hash: "hashedpassword1",
+    stripe_account_id: "___",
     timestamp: "2025-03-15T10:30:00Z"
   },
   {
@@ -13,6 +14,7 @@ export const users: User[] = [
     username: "jamies",
     email: "davidxionghl@gmail.com",
     password_hash: "hashedpassword2",
+    stripe_account_id: "___",
     timestamp: "2025-03-18T14:45:00Z"
   }
 ]

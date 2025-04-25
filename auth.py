@@ -66,11 +66,14 @@ def confirm_credentials():
     if User.query.filter_by(username = username).first():
         return jsonify({"error": "Username is already taken"}), 403
     
+    if User.query.filter_by(email = email).first():
+        return jsonify({"error": "Username is already taken"}), 404
+    
     passcode = random.randint(100000, 999999)
 
     disclaimer = "LionSwap will never email you and ask you to disclose or verify your password, credit card, or banking account number. If you receive a suspicious email with a link to update your account information, do not click on the link. Instead, report the e-mail to LionSwap for investigation."
 
-    send_email(email, "LionSwap Account Verification", "Here is your passcode: " + str(passcode) + "\n" + disclaimer)
+    send_email(email, "LionSwap Account Verification", "Here is your passcode: " + str(passcode) + "\n\n" + disclaimer)
     
     return jsonify({
         "message": "Confirmed Credentials",

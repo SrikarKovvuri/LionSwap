@@ -6,25 +6,14 @@ import { Search, Bell, ShoppingCart, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
-import { users as rawUsers } from "@/lib/sample-data"
 import { useAuth } from "@/app/context/AuthContext"
 import axios from "axios"
-
-// Define exactly the fields we expect on a "demo" user
-type DemoUser = {
-  id: number
-  username: string
-  avatarUrl?: string
-}
 
 export default function Header() {
   const { isLoggedIn, setIsLoggedIn } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
   const [numNotifs, setNumNotifs] = useState(0)
   const router = useRouter()
-
-  // Cast your imported sample‑data into our DemoUser shape
-  const currentUser = (rawUsers[0] as unknown) as DemoUser  // FIX THIS TO BE ACTUAL USER
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -102,11 +91,9 @@ export default function Header() {
             <></>)}
 
           {(isLoggedIn)? (
-            <Link href="/login">
-              <Button variant="ghost" size="sm" onClick={() => {setIsLoggedIn(false); localStorage.removeItem("token")}}>
-                Log out
-              </Button>
-            </Link>
+            <Button variant="ghost" size="sm" onClick={() => {setIsLoggedIn(false); localStorage.removeItem("token"); setTimeout(() => {router.push("/login");}, 10);}}>
+              Log out
+            </Button>
             ) : (
             <>
               <Link href="/login">
@@ -131,17 +118,13 @@ export default function Header() {
               size="icon"
               className="rounded-full h-10 w-10 p-0 overflow-hidden border-2 border-blue-100 hover:border-blue-300"
             >
-              {currentUser?.avatarUrl ? (
-                <Image
-                  src={currentUser.avatarUrl || "/blank-pfp.webp"}
-                  alt={currentUser.username}
-                  width={40}
-                  height={40}
-                  className="object-cover"
-                />
-              ) : (
-                <User className="h-5 w-5" />
-              )}
+              <Image
+                src={"/blank-pfp.webp"}
+                alt={""}
+                width={40}
+                height={40}
+                className="object-cover"
+              />
             </Button>
           </Link>
         </div>

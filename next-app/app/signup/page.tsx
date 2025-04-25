@@ -147,13 +147,19 @@ export default function SignUp() {
 
             {(errorNum===402) && (<div className="mt-3 text-center">
               <p className="text-sm text-red-500">
-                Username, Email, and Password are required
+                Username, Email, and Password are required.
               </p>
             </div>)}
 
             {(errorNum===403) && (<div className="mt-3 text-center">
               <p className="text-sm text-red-500">
-                Username is already taken
+                Username is already taken.
+              </p>
+            </div>)}
+
+            {(errorNum===404) && (<div className="mt-3 text-center">
+              <p className="text-sm text-red-500">
+                Email is already taken.
               </p>
             </div>)}
 
