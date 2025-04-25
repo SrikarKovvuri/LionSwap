@@ -2,6 +2,7 @@ export interface User {
   id: number
   username: string
   email: string
+  phone: string
   password_hash: string
   timestamp: string
   stripe_account_id: string
@@ -52,5 +53,5 @@ export interface CartItem {
   price: number;
   imageUrl: string;
   timestamp: string;
-  sellerAccount: string
+  sellerStripeId: string
 }

@@ -56,6 +56,7 @@ def confirm_credentials():
     username = request.json.get("username")
     email = request.json.get("email")
     password = request.json.get("password")
+    phone = request.json.get("phone")
 
     if email[len(email)-13:] != "@columbia.edu":  # check for @columbia.edu
         return jsonify({"error": "Email must be @columbia.edu"}), 401
@@ -67,7 +68,10 @@ def confirm_credentials():
         return jsonify({"error": "Username is already taken"}), 403
     
     if User.query.filter_by(email = email).first():
-        return jsonify({"error": "Username is already taken"}), 404
+        return jsonify({"error": "Email is already taken"}), 404
+    
+    if User.query.filter_by(phone = phone).first():
+        return jsonify({"error": "Phone number is already taken"}), 405
     
     passcode = random.randint(100000, 999999)
 
@@ -117,9 +121,10 @@ def signup():
     username = request.json.get("username")
     email = request.json.get("email")
     password = request.json.get("password")
+    phone = request.json.get("phone")
     
     hashed_password = generate_password_hash(password)
-    user = User(username=username, email=email, password_hash=hashed_password)
+    user = User(username=username, email=email, phone=phone, password_hash=hashed_password)
     
     db.session.add(user)
     db.session.commit()

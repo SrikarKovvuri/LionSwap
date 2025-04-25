@@ -41,7 +41,7 @@ export default function CartClient() {
                 items.push({
                     title: cartItems[i].title,
                     price: cartItems[i].price,
-                    sellerAccount: cartItems[i].sellerAccount,
+                    sellerAccount: cartItems[i].sellerStripeId,
                 })
             }
             const response = await axios.post(
