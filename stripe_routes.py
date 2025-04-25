@@ -15,16 +15,29 @@ stripe_bp = Blueprint('stripe', __name__)
 @jwt_required()
 def create_checkout_session():
     try:
-        payload = request.get_json()                  # { items: [ { price, title, sellerAccount } ] }
+        # force=True will parse JSON even if the header is missing/malformed
+        payload = request.get_json(force=True) or {}
         items = payload.get("items", [])
-        if not items:
+        if not isinstance(items, list) or not items:
             return jsonify({"error": "No items provided"}), 400
 
-        # only support one item for now:
+        # only support one item for now
         item = items[0]
-        price_cents = int(item["price"] * 100)        # dollars → cents
+        if "price" not in item or "sellerAccount" not in item:
+            return jsonify({"error": "Invalid item data"}), 400
+
+        # dollars → cents
+        try:
+            price_cents = int(item["price"] * 100)
+        except Exception:
+            return jsonify({"error": "Invalid price value"}), 400
+
         seller_account_id = item["sellerAccount"]
-        platform_fee_cents = int(price_cents * 0.10)   # e.g. 10% platform fee
+        if not seller_account_id:
+            return jsonify({"error": "Seller account ID missing"}), 400
+
+        # your 10% platform cut
+        platform_fee_cents = int(price_cents * 0.10)
 
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
@@ -47,9 +60,15 @@ def create_checkout_session():
 
         return jsonify({"url": session.url}), 200
 
+    except stripe.error.InvalidRequestError as e:
+        # A Stripe-specific error (like "invalid destination account")
+        return jsonify({"error": e.user_message or str(e)}), 400
+
     except Exception as err:
-        print(err)
+        # Anything else
+        print("⚠️ create-checkout-session error:", err)
         return jsonify({"error": str(err)}), 400
+
 
 @stripe_bp.route("/onboard", methods=["OPTIONS", "POST"])
 @jwt_required()

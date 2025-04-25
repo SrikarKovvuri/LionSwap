@@ -19,6 +19,8 @@ def get_cart():
     cart_data = []
     
     for item in cart_items:
+        product = Product.query.get(item.product_id)
+        seller = User.query.get(product.seller_id)
         item_data = {
             'id': item.id,
             'title': item.title,
@@ -26,7 +28,8 @@ def get_cart():
             'productId': item.product_id,
             'price': item.price,
             'imageUrl': item.image_url,
-            'timestamp': item.added_at.isoformat()
+            'timestamp': item.added_at.isoformat(),
+            'sellerAccount': seller.stripe_account_id
         }
         cart_data.append(item_data)
 
