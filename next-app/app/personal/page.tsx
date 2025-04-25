@@ -1,21 +1,20 @@
 "use client"
 import Image from "next/image"
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ProductGrid from "@/components/product-grid"
+import OrderGrid from "@/components/order-grid"
 import axios from "axios"
 import { redirect } from "next/navigation"
 import { useAuth } from "@/app/context/AuthContext"
 import { User, Product } from "@/lib/types"
-
 
 export default function ProfilePage() {
   
   const { isLoggedIn, setIsLoggedIn } = useAuth()
 
   if(!isLoggedIn){
-      redirect("/login")
+    redirect("/login")
   }
 
   const [user, setUser] = useState<User>();
@@ -55,10 +54,9 @@ export default function ProfilePage() {
     fetchProducts();
   }, []);
 
-
   if (!user) {
     return (
-      <h1>This user does not exist.</h1>
+        <h1>This user does not exist.</h1>
     )
   }
 
@@ -92,20 +90,26 @@ export default function ProfilePage() {
               <p className="text-sm text-gray-500">Sold</p>
             </div>
           </div>
-          <Button className="w-full mb-2">Message</Button>
           {/* <Button variant="outline" className="w-full">
             Follow
           </Button> */}
+          <div className="text-center">
+            <p className="font-bold">Contact Info</p>
+            <p className="text-sm text-gray-500">{user.email}</p>
+          </div>
         </div>
 
         <div className="md:w-2/3">
           <Tabs defaultValue="listings">
             <TabsList className="w-full mb-6">
               <TabsTrigger value="listings" className="flex-1">
-                Listings
+                My Listings
               </TabsTrigger>
               <TabsTrigger value="sold" className="flex-1">
-                Sold
+                Sold Listings
+              </TabsTrigger>
+              <TabsTrigger value="orders" className="flex-1">
+                My Orders
               </TabsTrigger>
               {/* <TabsTrigger value="reviews" className="flex-1">
                 Reviews
@@ -130,6 +134,10 @@ export default function ProfilePage() {
                   <p className="text-gray-500">No sold items</p>
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="orders">
+              <OrderGrid />
             </TabsContent>
 
             {/* <TabsContent value="reviews">

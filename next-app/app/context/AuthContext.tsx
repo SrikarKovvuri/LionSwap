@@ -27,20 +27,20 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);      // ← new
-  const [user, setUser] = useState<User | null>(null);
+  //const [user, setUser] = useState<User | null>(null);
 
   const refetchUser = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token');
-      const res = await axios.get<{ user: User }>(
-        'http://localhost:5000/current_user',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setUser(res.data.user);
+      // const res = await axios.get<{ user: User }>(
+      //   'http://localhost:5000/current_user',
+      //   { headers: { Authorization: `Bearer ${token}` } }
+      // );
+      // setUser(res.data.user);
       setIsLoggedIn(true);
     } catch (err) {
-      setUser(null);
+      //setUser(null);
       setIsLoggedIn(false);
     }
   };

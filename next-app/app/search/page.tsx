@@ -1,12 +1,18 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, redirect } from "next/navigation";
 import ProductGrid from "@/components/product-grid"
 import type { Product } from "@/lib/types";
+import { useAuth } from "@/app/context/AuthContext"
 
 export default function SearchPage() {
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+
+  if(!isLoggedIn){
+      redirect("/login")
+  }
+
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
 
