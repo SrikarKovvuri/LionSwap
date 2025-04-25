@@ -1,34 +1,39 @@
-// app/listings/[id]/page.tsx
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import AddToCartButton from "@/components/ui/addToCartButton"
 import { notFound } from "next/navigation"
 import { Product } from "@/lib/types"
+import axios from "axios"
 
 
 interface ProductPageProps {
   params: {
-    id: string
+    id: number
   }
 }
 
-async function getListingById(id: string): Promise<Product | null> {
-  const res = await fetch(`http://localhost:5000/listings/${id}`, {
-    cache: "no-store"  // optional: always fetch fresh
-  })
-  if (res.status === 404) return null
-  if (!res.ok) throw new Error(`Error fetching listing: ${res.statusText}`)
-  const json = await res.json()
-  return json.listing as Product
+
+async function getListingById(id: number): Promise<Product | null>{
+  try{
+    const results = await axios.get(`http://localhost:5000/listings/${id}`, {});
+    return results.data.listing;
+  }
+  catch (err: any) {
+    console.error("getListing(TypeScript) error", err.response?.data || err.message);
+    return null
+  }
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
-  const { id } = await params
-  const product = await getListingById(id)
+export default async function ProductPage(props: ProductPageProps) {
+
+  // Await props.params before destructuring
+  const params = await props.params;
+  const { id } = params;
+  
+  const product = await getListingById(Number(id));
 
   if (!product) {
-    // this will show Next.js’ 404 page
     notFound()
   }
 
@@ -105,10 +110,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <div className="border-t">
             <h2 className="font-bold mb-2">Description</h2>
-            <p className="text-sm text-gray-700 mb-6">
-              {product.description}
-            </p>
-            
+            <p className="text-sm text-gray-700 mb-6">{product.description}</p>
+
             <Link href={`/profile/${product.sellerUsername}`}>
               <div className="flex items-center gap-4 mb-6">
                 <Image

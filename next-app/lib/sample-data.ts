@@ -4,18 +4,18 @@ export const users: User[] = [
   {
     id: 1,
     username: "alexj",
+    email: "davidxionghl@gmail.com",
     password_hash: "hashedpassword1",
-    timestamp: "2025-03-15T10:30:00Z",
-    email: "davidxionghl@gmail.com"",
-    stripe_account_id: "NA"
+    stripe_account_id: "___",
+    timestamp: "2025-03-15T10:30:00Z"
   },
   {
     id: 2,
     username: "jamies",
-    password_hash: "hashedpassword2",
-    timestamp: "2025-03-18T14:45:00Z",
     email: "davidxionghl@gmail.com",
-    stripe_account_id: "NA"
+    password_hash: "hashedpassword2",
+    stripe_account_id: "___",
+    timestamp: "2025-03-18T14:45:00Z"
   }
 ]
 
@@ -243,3 +243,24 @@ export const notifications: Notification[] = [
     itemImage: "/placeholder.svg"
   }
 ];
+
+export const cartItems: CartItem[] = [
+  {
+    id: 1,
+    userId: 1, // Note: interfaces defines this as string but userId elsewhere is number
+    productId: 1,
+    title: "Introduction to Economics Textbook",
+    price: 45.0,
+    imageUrl: "/placeholder.svg?height=400&width=400",
+    timestamp: "2025-04-17T09:30:00Z"
+  },
+  {
+    id: 2,
+    userId: 1, 
+    productId: 5,
+    title: "Calculus Early Transcendentals",
+    price: 50.00,
+    imageUrl: "/placeholder.svg",
+    timestamp: "2025-04-17T09:32:00Z"
+  }
+]

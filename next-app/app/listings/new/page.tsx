@@ -1,3 +1,4 @@
+// app/new-listing/page.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -61,41 +62,35 @@ export default function NewListingPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-  
-    // 1) Onboard if they’ve never connected
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // 1) If they have no stripe_account_id, start onboarding
     if (user && !user.stripe_account_id) {
-      setLoadingOnboard(true)
+      setLoadingOnboard(true);
       try {
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem("token");
         const { data } = await axios.post(
           "http://localhost:5000/onboard",
           {},
           { headers: { Authorization: `Bearer ${token}` } }
-        )
-        // only redirect if Stripe actually gave you a URL
-        if (data.url) {
-          window.location.href = data.url
-          return  // bail out, they’re off to Stripe
-        } else {
-          // already onboarded → fall through to listing step
-          setLoadingOnboard(false)
-        }
+        );
+        // kick them into Stripe
+        window.location.href = data.url;
       } catch (err) {
-        console.error("Onboarding failed", err)
-        alert("Could not start Stripe onboarding. Please try again.")
-        setLoadingOnboard(false)
-        setIsSubmitting(false)
-        return
+        console.error("Onboarding failed", err);
+        alert("Could not start Stripe onboarding. Please try again.");
+        setLoadingOnboard(false);
+        setIsSubmitting(false);
       }
+      return;
     }
-  
-  
+
+    // 2) Otherwise, post the listing
     try {
-      const token = localStorage.getItem("token")
-      if (!token) throw new Error("You must be logged in")
-  
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("You must be logged in");
+
       await axios.post(
         "http://localhost:5000/listings",
         {
@@ -112,16 +107,16 @@ export default function NewListingPage() {
             "Content-Type": "application/json",
           },
         }
-      )
-      router.push("/") 
-      alert("Your item has successfully been added");         // you're done, go home
+      );
+      router.push("/");
     } catch (err: any) {
-      console.error(err.response?.data || err.message)
-      alert(err.response?.data?.error || "Failed to create listing")
+      console.error(err.response?.data || err.message);
+      alert(err.response?.data?.error || "Failed to create listing");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
+
   // ─── The actual form ─────────────────────────────────────────────────
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
