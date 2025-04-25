@@ -447,4 +447,3 @@ def vector_search(query):
             "stripeAccountId": user.stripe_account_id
         }
     })
-    

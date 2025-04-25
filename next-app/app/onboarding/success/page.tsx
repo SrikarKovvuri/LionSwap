@@ -1,27 +1,22 @@
-// app/onboarding/success/page.tsx
-'use client'
-import { useEffect } from "react"
+"use client";
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/app/context/AuthContext"
+import { useEffect } from "react";
 
-export default function OnboardingSuccess() {
-  const { user, setUser } = useAuth()
-  const router = useRouter()
+export default function OnboardSuccess() {
+    const router = useRouter()
 
-  useEffect(() => {
-    // read the account ID back from the query string
-    const q = new URLSearchParams(window.location.search)
-    const acct = q.get("account_id")
-    if (acct && user) {
-      setUser({ ...user, stripe_account_id: acct })
-    }
-    // now bounce wherever you like
-    router.push("/")
-  }, [router, setUser, user])
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            router.push("/");
 
-  return (
-    <div className="p-8 text-center">
-      <p>🎉 Your Stripe account is connected! Redirecting…</p>
-    </div>
-  )
+        }, 3000)
+    }, [router]);
+    return (
+        <div className="flex items-center justify-center h-screen text-center">
+          <div>
+            <h1 className="text-2xl font-bold mb-2"> Onboarding Complete!</h1>
+            <p className="text-sm text-gray-600">Redirecting you to the homepage...</p>
+          </div>
+        </div>
+      );
 }
