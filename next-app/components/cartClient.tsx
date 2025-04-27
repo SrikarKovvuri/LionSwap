@@ -36,12 +36,12 @@ export default function CartClient() {
         try {
             const token = localStorage.getItem("token");
             if(!token) throw new Error("Not logged in");
-            const items: { title: string; price: number, sellerAccount: string } [] = [];
+            const items: { title: string; price: number, sellerStripeId: string } [] = [];
             for( let i = 0; i < cartItems.length; i++) {
                 items.push({
                     title: cartItems[i].title,
                     price: cartItems[i].price,
-                    sellerAccount: cartItems[i].sellerStripeId,
+                    sellerStripeId: cartItems[i].sellerStripeId,
                 })
             }
             const response = await axios.post(
@@ -54,6 +54,7 @@ export default function CartClient() {
         }
         catch(error) {
             alert("Payment could not go through. Please try again");
+            console.log(error)
         }
     }
 

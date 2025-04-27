@@ -214,7 +214,8 @@ export default function SignUp() {
             <div className="bg-slate-100 rounded-lg shadow p-8">
               <div className="text-center mb-6">
                 <h1 className="text-3xl font-bold mb-2">Confirm Your Email</h1>
-                <p className="text-gray-600">verification code sent to {email}</p>
+                <p className="text-gray-600">Verification code sent to {email}</p>
+                <p className="text-gray-600">Check your spam folder</p>
               </div>
 
               <form onSubmit={(e) => {

@@ -4,6 +4,10 @@ from models import db, Product, Order, User, Notification
 
 market_ops = Blueprint("market_operations", __name__)
 
+@market_ops.route('/', methods=[])
+def home():
+    return jsonify({"message": "Flask backend server is running successfully"}), 200
+
 # publicly list all product listings with optional filtering by keyword or condition
 @market_ops.route('/listings', methods=['GET'])
 def get_listings():

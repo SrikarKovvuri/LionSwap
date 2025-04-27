@@ -58,7 +58,7 @@ def confirm_credentials():
     password = request.json.get("password")
     phone = request.json.get("phone")
 
-    if email[len(email)-13:] != "@columbia.edu":  # check for @columbia.edu
+    if email[len(email)-12:] != "columbia.edu":  # check for @columbia.edu
         return jsonify({"error": "Email must be @columbia.edu"}), 401
 
     if not username or not password or not email:
