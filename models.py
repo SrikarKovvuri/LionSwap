@@ -31,7 +31,7 @@ class Product(db.Model):
     __tablename__ = "product"
     id          = db.Column(db.Integer, primary_key=True)
     title       = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text)
+    description = db.Column(db.Text)      
     price       = db.Column(db.Float, nullable=False)
     category    = db.Column(db.String(50), nullable=False)
     condition   = db.Column(db.String(50), nullable=False)
