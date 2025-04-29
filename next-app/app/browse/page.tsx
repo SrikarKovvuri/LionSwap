@@ -4,7 +4,7 @@ import type { Product } from "@/lib/types";
 
 async function getListings(): Promise<Product[]>  {
     try{
-      const results = await axios.get('http://localhost:5000/listings', {});
+      const results = await axios.get('https://lionswap.onrender.com/listings', {});
       return results.data.listings;
     }
     catch (err: any) {

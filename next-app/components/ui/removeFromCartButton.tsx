@@ -10,7 +10,7 @@ export default function RemoveFromCartButton({itemId}: RemoveFromCartProps) {
     const removeFromCart = async (itemId: number) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`http://localhost:5000/cart/remove/${itemId}`, 
+            const response = await axios.delete(`https://lionswap.onrender.com/cart/remove/${itemId}`, 
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,

@@ -14,7 +14,7 @@ interface ProductPageProps {
 }
 
 async function getListingById(id: string): Promise<Product | null> {
-  const res = await fetch(`http://localhost:5000/listings/${id}`, {
+  const res = await fetch(`https://lionswap.onrender.com/listings/${id}`, {
     cache: "no-store"  // optional: always fetch fresh
   })
   if (res.status === 404) return null

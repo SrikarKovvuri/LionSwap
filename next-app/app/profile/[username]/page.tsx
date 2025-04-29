@@ -12,7 +12,7 @@ interface ProfilePageProps {
 
 async function fetchProductsByUsername(username: string): Promise<[Product[], User | null]> {
     try {
-        const response = await axios.get(`http://localhost:5000/listings/username/${username}`, {});
+        const response = await axios.get(`https://lionswap.onrender.com/listings/username/${username}`, {});
         return [response.data.listings, response.data.user];
     } catch (err: any) {
         if(err.response.status === 401){

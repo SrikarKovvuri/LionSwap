@@ -36,7 +36,7 @@ export default function AddToCartButton({
 
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.post("http://localhost:5000/cart/add", body, {
+      const res = await axios.post("https://lionswap.onrender.com/cart/add", body, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

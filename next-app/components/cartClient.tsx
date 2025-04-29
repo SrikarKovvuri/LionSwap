@@ -18,7 +18,7 @@ export default function CartClient() {
         async function fetchCartItems() {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get("http://localhost:5000/cart", {
+                const response = await axios.get("https://lionswap.onrender.com/cart", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -45,7 +45,7 @@ export default function CartClient() {
                 })
             }
             const response = await axios.post(
-                "http://localhost:5000/create-checkout-session",
+                "https://lionswap.onrender.com/create-checkout-session",
                 { items },
                 { headers: { Authorization: `Bearer ${token}` } }
               );
@@ -61,7 +61,7 @@ export default function CartClient() {
     const removeFromCart = async (itemId: number) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`http://localhost:5000/cart/remove/${itemId}`, 
+            const response = await axios.delete(`https://lionswap.onrender.com/cart/remove/${itemId}`, 
                 {
                 headers: {
                     Authorization: `Bearer ${token}`,

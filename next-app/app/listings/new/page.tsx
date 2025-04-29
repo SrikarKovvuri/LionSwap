@@ -70,7 +70,7 @@ export default function NewListingPage() {
       try {
         const token = localStorage.getItem("token")
         const { data } = await axios.post(
-          "http://localhost:5000/onboard",
+          "https://lionswap.onrender.com/onboard",
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         )
@@ -97,7 +97,7 @@ export default function NewListingPage() {
       if (!token) throw new Error("You must be logged in")
   
       await axios.post(
-        "http://localhost:5000/listings",
+        "https://lionswap.onrender.com/listings",
         {
           title,
           description,
