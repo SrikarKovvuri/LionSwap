@@ -15,7 +15,7 @@ export interface Product {
   price: number
   category: "Textbooks" | "Electronics" | "Furniture" | "Clothing" | "Accessories" | "Dorm Essentials" | "Sports" | "Event Tickets" | "Other"
   condition: string
-  imageUrl: string
+  imageUrls: string[]
   timestamp: string
   isAvailable: boolean
   //status: "active" | "sold" | "reserved"

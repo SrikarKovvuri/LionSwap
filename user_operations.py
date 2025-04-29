@@ -27,7 +27,7 @@ def get_listings():
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "imageUrl":    p.image_url,
+            "imageUrls":    p.image_urls or [],
             "isAvailable": p.is_available,
             "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
@@ -50,7 +50,7 @@ def get_listing(listing_id):
         "price":        product.price,
         "category":     product.category,
         "condition":    product.condition,
-        "imageUrl":    product.image_url,
+        "imageUrls":    product.image_urls or [],
         "isAvailable": product.is_available,
         "timestamp":    product.posted_at.isoformat() if product.posted_at else None
     }
@@ -71,7 +71,7 @@ def get_listing_by_category(category):
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "imageUrl":    p.image_url,
+            "imageUrls":    p.image_urls or [],
             "isAvailable": p.is_available,
             "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
@@ -99,7 +99,7 @@ def get_listing_by_username(username):
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "imageUrl":    p.image_url,
+            "imageUrls":    p.image_urls or [],
             "isAvailable": p.is_available,
             "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
@@ -131,7 +131,7 @@ def get_listing_by_user():
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "imageUrl":    p.image_url,
+            "imageUrls":    p.image_urls or [],
             "isAvailable": p.is_available,
             "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
@@ -149,7 +149,7 @@ def create_listing():
     description = data.get("description", "")
     price = data.get("price")            
     condition = data.get("condition")    
-    image_url = data.get("image_url") 
+    image_urls = data.get("image_urls") 
     category = data.get('category')   
 
     if not title or price is None or not condition:
@@ -165,7 +165,7 @@ def create_listing():
         description=description,
         price=price,
         condition=condition,
-        image_url=image_url,
+        image_urls=image_urls,
         is_available=True,
         category = category
     )
@@ -182,7 +182,7 @@ def create_listing():
             "description":  product.description,
             "price":        product.price,
             "condition":    product.condition,
-            "imageUrl":    product.image_url,
+            "imageUrls":    product.image_urls,
             "isAvailable": product.is_available,
             "timestamp":    product.posted_at.isoformat(),
             "category":     product.category
@@ -208,7 +208,7 @@ def update_listing(listing_id):
     product.description = data.get("description", product.description)
     product.price = data.get("price", product.price)
     product.condition = data.get("condition", product.condition)
-    product.image_url = data.get("image_url", product.image_url)
+    product.image_urls = data.get("image_urls", product.image_urls)
     
     try:
         db.session.commit()
@@ -224,7 +224,7 @@ def update_listing(listing_id):
         "description":  product.description,
         "price":        product.price,
         "condition":    product.condition,
-        "image_url":    product.image_url,
+        "image_urls":    product.image_urls,
         "isAvailable": product.is_available,
         "timestamp":    product.posted_at.isoformat(),
         "category":     product.category
@@ -415,7 +415,7 @@ def get_notifications_by_user():
             "actionUrl":   n.action_url,
             "senderId":    n.sender_id,
             "productId":   n.product_id,
-            "imageUrl":    n.image_url
+            "imageUrls":    n.image_urls
         })
 
     return jsonify({"notifications": notifs}), 200

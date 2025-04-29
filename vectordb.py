@@ -1,5 +1,3 @@
-
-
 from sentence_transformers import SentenceTransformer
 from models import Product
 from flask import Blueprint, request, jsonify

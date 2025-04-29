@@ -36,7 +36,7 @@ class Product(db.Model):
     price       = db.Column(db.Float, nullable=False)
     category    = db.Column(db.String(50), nullable=False)
     condition   = db.Column(db.String(50), nullable=False)
-    image_urls   = db.Column(ARRAY(db.String), default = [], nullable=True)
+    image_urls   = db.Column(ARRAY(db.String), default = ["/placeholder.svg"], nullable=True)
     posted_at   = db.Column(db.DateTime, default=datetime.utcnow)
     is_available = db.Column(db.Boolean, default=True)
 

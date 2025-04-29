@@ -104,7 +104,7 @@ export default function NewListingPage() {
           category,
           condition,
           price: parseFloat(price),
-          image_url: images[0] ?? "",
+          image_urls: images[0] ?? "",
         },
         {
           headers: {
@@ -117,7 +117,7 @@ export default function NewListingPage() {
       alert("Your item has successfully been added");         // you're done, go home
     } catch (err: any) {
       console.error(err.response?.data || err.message)
-      alert(err.response?.data?.error || "Failed to create listing")
+      alert("Failed to create listing");
     } finally {
       setIsSubmitting(false)
     }

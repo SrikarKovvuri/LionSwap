@@ -38,7 +38,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="md:w-1/2">
           <div className="relative aspect-square mb-4">
             <Image
-              src={product.imageUrl || "/placeholder.svg"}
+              src={product.imageUrls[0] || "/placeholder.svg"}
               alt={product.title}
               fill
               className="object-cover rounded-lg"
@@ -48,7 +48,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {[...Array(5)].map((_, i) => (
               <div key={i} className="aspect-square relative">
                 <Image
-                  src={product.imageUrl || "/placeholder.svg"}
+                  src={product.imageUrls[i+1] || "/placeholder.svg"}
                   alt={`${product.title} thumbnail ${i + 1}`}
                   fill
                   className="object-cover rounded-md cursor-pointer"
@@ -67,7 +67,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {product.isAvailable? 
             (<>
               <div className="flex gap-4 mb-6">
-                <AddToCartButton itemId={product.id} itemName={product.title} itemPrice={product.price} itemImage={product.imageUrl} itemCategory={product.category}/>
+                <AddToCartButton itemId={product.id} itemName={product.title} itemPrice={product.price} itemImages={product.imageUrls} itemCategory={product.category}/>
                 <Link href={`/profile/${product.sellerUsername}`}>
                   <Button variant="outline" className="flex-1">
                     Make offer

@@ -18,7 +18,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
           <Link href={`/listings/${product.id}`} className="block relative">
             <div className="aspect-square relative overflow-hidden">
               <Image
-                src={product.imageUrl || "/placeholder.svg"}
+                src={product.imageUrls[0] || "/placeholder.svg"}
                 alt={product.title || "Product image"}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"

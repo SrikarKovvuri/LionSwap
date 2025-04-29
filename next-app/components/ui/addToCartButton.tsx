@@ -8,7 +8,7 @@ interface AddToCartButtonProps {
   itemId: number | string;   // allow string so we can cast
   itemName: string;
   itemPrice: number | string;
-  itemImage: string;
+  itemImages: string[];
   itemCategory: string;
 }
 
@@ -16,7 +16,7 @@ export default function AddToCartButton({
   itemId,
   itemName,
   itemPrice,
-  itemImage,
+  itemImages: itemImages,
   itemCategory,
 }: AddToCartButtonProps) {
   const addToCart = async () => {
@@ -24,7 +24,7 @@ export default function AddToCartButton({
       item_id: Number(itemId),
       item_name: itemName,
       item_price: Number(itemPrice),
-      item_image: itemImage,
+      item_images: itemImages,
       item_category: itemCategory
     };
     // quick client‑side validation

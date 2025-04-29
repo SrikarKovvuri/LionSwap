@@ -1,8 +1,8 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import ProductGrid from "@/components/product-grid"
-import { products } from "@/lib/sample-data"
 import { notFound } from "next/navigation"
+import { Product } from "@/lib/types"
 import axios from "axios";
 
 
@@ -13,7 +13,7 @@ type CategoryPageProps = {
   };
 };
 
-async function getListings(category: string) {
+async function getListings(category: string): Promise<Product[]> {
   try{
     const results = await axios.get(`http://localhost:5000/listings/category/${category}`, {});
     return results.data.listings;
@@ -53,14 +53,4 @@ export default async function CategoryPage(props: CategoryPageProps) {
       </div>
     </div>
   );
-}
-
-// Generate static paths for common categories
-export async function generateStaticParams() {
-  // Get unique categories from your products data
-  const categories = [...new Set(products.map(product => product.category))];
-  
-  return categories.map(category => ({
-    category,
-  }));
 }
