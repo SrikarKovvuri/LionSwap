@@ -7,7 +7,7 @@ import axios from "axios";
 
 async function getListings() {
   try{
-    const results = await axios.get('http://localhost:5000/listings', {});
+    const results = await axios.get('https://lionswap.onrender.com/listings', {});
     return results.data.listings;
   }
   catch (err: any) {
