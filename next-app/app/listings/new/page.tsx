@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useRouter, redirect } from "next/navigation";
 import { Camera } from "lucide-react";
@@ -30,7 +30,11 @@ export default function NewListingPage() {
   const [condition, setCondition] = useState("");
   const [price, setPrice] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  //two below are what we gonna use to send a form to flask to manually store the blobs
+  const [preview, setPreview] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+   // we need a ref to clear the file input if user “Remove”s the image
+   const fileInputRef = useRef<HTMLInputElement>(null);
   // ─── Wait for auth to initialize ─────────────────────────────────────
   if (isLoading) {
     return <div className="p-8 text-center">Loading your session…</div>;
@@ -54,10 +58,17 @@ export default function NewListingPage() {
   // ─── Handlers ────────────────────────────────────────────────────────
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setImage(URL.createObjectURL(e.target.files[0]))
+      const selected = e.target.files[0];
+      setPreview(URL.createObjectURL(selected));
+      setFile(selected);
     }
-  }
+  };
 
+  const clearImage = () => {
+    setPreview(null);
+    setFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -94,21 +105,24 @@ export default function NewListingPage() {
     try {
       const token = localStorage.getItem("token")
       if (!token) throw new Error("You must be logged in")
-  
+      
+        // build FormData
+      const form = new FormData();
+      form.append("title", title);
+      form.append("description", description);
+      form.append("category", category);
+      form.append("condition", condition);
+      form.append("price", price);
+      if (file) {
+        form.append("image", file);
+      }
+
       await axios.post(
-        "http://localhost:5000/listings",
-        {
-          title,
-          description,
-          category,
-          condition,
-          price: parseFloat(price),
-          image_url: image ?? "",
-        },
+        "http://localhost:5000/listings", form,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+           // not setting file type because axios assumes multipart boundary => "Content-Type": "application/json",
           },
         }
       )
@@ -131,17 +145,20 @@ export default function NewListingPage() {
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Photo</h2>
           <p className="text-sm text-gray-500">Add a clear photo of your item</p>
-
           <div className="flex flex-col items-center">
-            {image ? (
+            {preview ? (
               <div className="relative w-full max-w-md aspect-square mb-4 border rounded-lg overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={image || "/placeholder.svg"} alt="Product image" className="w-full h-full object-cover" />
+                <img
+                  src={preview}
+                  alt="Product preview"
+                  className="w-full h-full object-cover"
+                />
                 <Button
                   variant="destructive"
                   size="sm"
                   className="absolute top-2 right-2"
-                  onClick={() => setImage(null)}
+                  onClick={clearImage}
                 >
                   Remove
                 </Button>
@@ -150,7 +167,13 @@ export default function NewListingPage() {
               <label className="w-full max-w-md aspect-square flex flex-col items-center justify-center border border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
                 <Camera className="h-12 w-12 text-gray-400 mb-2" />
                 <span className="text-sm text-gray-500">Add photo</span>
-                <Input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                <Input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  ref={fileInputRef}
+                />
               </label>
             )}
           </div>
@@ -180,7 +203,11 @@ export default function NewListingPage() {
           </div>
           <div>
             <Label htmlFor="category">Category</Label>
-            <Select value={category} onValueChange={setCategory} required>
+            <Select
+              value={category}
+              onValueChange={setCategory}
+              required
+            >
               <SelectTrigger id="category">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
@@ -199,7 +226,11 @@ export default function NewListingPage() {
           </div>
           <div>
             <Label htmlFor="condition">Condition</Label>
-            <Select value={condition} onValueChange={setCondition} required>
+            <Select
+              value={condition}
+              onValueChange={setCondition}
+              required
+            >
               <SelectTrigger id="condition">
                 <SelectValue placeholder="Select condition" />
               </SelectTrigger>
@@ -230,7 +261,11 @@ export default function NewListingPage() {
         </div>
 
         {/* --- Submit --- */}
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? "Listing…" : "List item"}
         </Button>
       </form>

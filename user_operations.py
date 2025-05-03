@@ -1,6 +1,9 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, Product, Order, User, Notification
+import io
+from flask import send_file, abort, url_for
+
 
 market_ops = Blueprint("market_operations", __name__)
 
@@ -23,7 +26,8 @@ def get_listings():
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "imageUrl":    p.image_url,
+            #temporary for the blob, should just be "imageUrl": p.imageURL
+            "imageUrl": url_for('market_operations.get_listing_image', listing_id=p.id, _external=True),
             "isAvailable": p.is_available,
             "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
@@ -46,7 +50,8 @@ def get_listing(listing_id):
         "price":        product.price,
         "category":     product.category,
         "condition":    product.condition,
-        "imageUrl":    product.image_url,
+        #temporary for the blob, should just be "imageUrl": product.imageURL
+        "imageUrl": url_for('market_operations.get_listing_image', listing_id=product.id, _external=True),
         "isAvailable": product.is_available,
         "timestamp":    product.posted_at.isoformat() if product.posted_at else None
     }
@@ -67,7 +72,8 @@ def get_listing_by_category(category):
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "imageUrl":    p.image_url,
+            #temporary for the blob, should just be "imageUrl": p.imageURL
+            "imageUrl": url_for('market_operations.get_listing_image', listing_id=p.id, _external=True),
             "isAvailable": p.is_available,
             "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
@@ -95,7 +101,8 @@ def get_listing_by_username(username):
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "imageUrl":    p.image_url,
+            #temporary for the blob, should just be "imageUrl": p.imageURL
+            "imageUrl": url_for('market_operations.get_listing_image', listing_id=p.id, _external=True),
             "isAvailable": p.is_available,
             "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
@@ -127,7 +134,8 @@ def get_listing_by_user():
             "price":        p.price,
             "category":     p.category,
             "condition":    p.condition,
-            "imageUrl":    p.image_url,
+            #temporary for the blob, should just be "imageUrl": p.imageURL
+            "imageUrl": url_for('market_operations.get_listing_image', listing_id=p.id, _external=True),
             "isAvailable": p.is_available,
             "timestamp":    p.posted_at.isoformat() if p.posted_at else None
         })
@@ -135,58 +143,73 @@ def get_listing_by_user():
     return jsonify({"listings": listings}), 200
 
 
-# create a new product listing (Seller must be authenticated)
 @market_ops.route('/listings', methods=['POST'])
 @jwt_required()
 def create_listing():
-    seller_id = get_jwt_identity()  
-    data = request.get_json() or {}
-    title = data.get("title")
-    description = data.get("description", "")
-    price = data.get("price")            
-    condition = data.get("condition")    
-    image_url = data.get("image_url") 
-    category = data.get('category')   
+    seller_id = get_jwt_identity()
 
-    if not title or price is None or not condition:
+    # ── 1) Text fields ─────────────────────────────────────────
+    title       = request.form.get("title", "").strip()
+    description = request.form.get("description", "").strip()
+    price_raw   = request.form.get("price", "").strip()
+    category    = request.form.get("category", "").strip()
+    condition   = request.form.get("condition", "").strip()
+
+    if not title or not price_raw or not condition:
         return jsonify({"error": "Title, price, and condition are required"}), 400
-    
-    user = User.query.filter_by(id=seller_id).first()
-    username = user.username
 
+    try:
+        price = float(price_raw)
+    except ValueError:
+        return jsonify({"error": "Price must be a number"}), 400
+
+    # ── 2) Image file ──────────────────────────────────────────
+    image_file = request.files.get("image")
+    image_data = image_file.read() if image_file else None
+    image_mime = image_file.mimetype if image_file else None
+
+    # ── 3) Lookup user ─────────────────────────────────────────
+    user = User.query.get(seller_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # ── 4) Create Product ──────────────────────────────────────
     product = Product(
-        seller_id=seller_id,
-        seller_username=username,
-        title=title,
-        description=description,
-        price=price,
-        condition=condition,
-        image_url=image_url,
-        is_available=True,
-        category = category
+        seller_id       = seller_id,
+        seller_username = user.username,
+        title           = title,
+        description     = description,
+        price           = price,
+        category        = category,
+        condition       = condition,
+        image_data      = image_data,    # ← raw bytes
+        image_mime      = image_mime,    # ← MIME type
+        is_available    = True
     )
+
     db.session.add(product)
     try:
         db.session.commit()
-
-        #build a response dict by hand: 
-        listing_data = {
-            "id":           product.id,
-            "sellerId":    product.seller_id,
-            "sellerUsername": product.seller_username,
-            "title":        product.title,
-            "description":  product.description,
-            "price":        product.price,
-            "condition":    product.condition,
-            "imageUrl":    product.image_url,
-            "isAvailable": product.is_available,
-            "timestamp":    product.posted_at.isoformat(),
-            "category":     product.category
-        }
-        return jsonify({"message": "Listing created", "listing": listing_data}), 201
     except Exception as err:
         db.session.rollback()
-        return jsonify({"error": "Database error: " + str(err)}), 500
+        return jsonify({"error": f"Database error: {err}"}), 500
+
+    # ── 5) Build response ───────────────────────────────────────
+    listing_data = {
+        "id":            product.id,
+        "sellerId":      product.seller_id,
+        "sellerUsername":product.seller_username,
+        "title":         product.title,
+        "description":   product.description,
+        "price":         product.price,
+        "category":      product.category,
+        "condition":     product.condition,
+        "isAvailable":   product.is_available,
+        "timestamp":     product.posted_at.isoformat(),
+        # front‑end will fetch the image via your blob route
+        "imageUrl":      url_for('market_operations.get_listing_image', listing_id=product.id, _external=True)
+    }
+    return jsonify({"message": "Listing created", "listing": listing_data}), 201
 
 #update a product listing (owner-only)
 @market_ops.route('/listings/<int:listing_id>', methods=['PUT'])
@@ -464,3 +487,17 @@ def get_current_user():
             "stripeAccountId": user.stripe_account_id
         }
     })
+
+#temp route for getting blob image
+# temp route for getting blob image
+@market_ops.route('/listings/<int:listing_id>/image', methods=['GET'])
+def get_listing_image(listing_id):
+    p = Product.query.get_or_404(listing_id)
+    if not p.image_data:
+        abort(404)
+    return send_file(
+        io.BytesIO(p.image_data),
+        mimetype=p.image_mime or 'application/octet-stream',
+        as_attachment=False,
+        download_name=f'listing-{listing_id}'
+    )

@@ -5,7 +5,7 @@ from sqlalchemy import Float
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import event
 from sentence_transformers import SentenceTransformer
-
+from sqlalchemy import LargeBinary
 db = SQLAlchemy()
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -36,13 +36,18 @@ class Product(db.Model):
     price       = db.Column(db.Float, nullable=False)
     category    = db.Column(db.String(50), nullable=False)
     condition   = db.Column(db.String(50), nullable=False)
-    image_url   = db.Column(db.String(250))
+    image_url   = db.Column(db.String(250), nullable = True)
     posted_at   = db.Column(db.DateTime, default=datetime.utcnow)
     is_available = db.Column(db.Boolean, default=True)
 
     seller_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     seller_username = db.Column(db.String(100), nullable = True)
 
+
+    #Temp properties we gonna use to carry out the direct blob storage
+    image_data = db.Column(LargeBinary, nullable=True)
+    image_mime = db.Column(db.String(50), nullable = True)
+    #relationships
     reviews = db.relationship("Review", backref="product", lazy=True)
     orders  = db.relationship("Order",  backref="product", lazy=True)
     vector = db.Column(Vector(384), nullable = True)
