@@ -23,7 +23,7 @@ export default function NewListingPage() {
 
   // ─── Local state ─────────────────────────────────────────────────────
   const [loadingOnboard, setLoadingOnboard] = useState(false);
-  const [images, setImages] = useState<string[]>([]);
+  const [image, setImage] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -53,17 +53,16 @@ export default function NewListingPage() {
 
   // ─── Handlers ────────────────────────────────────────────────────────
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    const urls = Array.from(e.target.files).map((file) =>
-      URL.createObjectURL(file)
-    );
-    setImages((prev) => [...prev, ...urls]);
-  };
+    if (e.target.files && e.target.files.length > 0) {
+      setImage(URL.createObjectURL(e.target.files[0]))
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
-  
+  /*
+  stripe stuff, we'll add this later date
     // 1) Onboard if they’ve never connected
     if (user && !user.stripe_account_id) {
       setLoadingOnboard(true)
@@ -90,7 +89,7 @@ export default function NewListingPage() {
         return
       }
     }
-  
+  */
   
     try {
       const token = localStorage.getItem("token")
@@ -104,7 +103,7 @@ export default function NewListingPage() {
           category,
           condition,
           price: parseFloat(price),
-          image_url: images[0] ?? "",
+          image_url: image ?? "",
         },
         {
           headers: {
@@ -130,34 +129,28 @@ export default function NewListingPage() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* --- Photos --- */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Photos</h2>
-          <p className="text-sm text-gray-500">
-            Add up to 12 photos. The first image will be the cover.
-          </p>
-          <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
-            {images.map((url, i) => (
-              <div
-                key={i}
-                className="aspect-square relative border rounded-lg overflow-hidden"
-              >
-                <img
-                  src={url}
-                  alt={`Upload ${i + 1}`}
-                  className="w-full h-full object-cover"
-                />
+          <h2 className="text-lg font-semibold">Photo</h2>
+          <p className="text-sm text-gray-500">Add a clear photo of your item</p>
+
+          <div className="flex flex-col items-center">
+            {image ? (
+              <div className="relative w-full max-w-md aspect-square mb-4 border rounded-lg overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={image || "/placeholder.svg"} alt="Product image" className="w-full h-full object-cover" />
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="absolute top-2 right-2"
+                  onClick={() => setImage(null)}
+                >
+                  Remove
+                </Button>
               </div>
-            ))}
-            {images.length < 12 && (
-              <label className="aspect-square flex flex-col items-center justify-center border border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
-                <Camera className="h-8 w-8 text-gray-400 mb-2" />
+            ) : (
+              <label className="w-full max-w-md aspect-square flex flex-col items-center justify-center border border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
+                <Camera className="h-12 w-12 text-gray-400 mb-2" />
                 <span className="text-sm text-gray-500">Add photo</span>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  className="hidden"
-                  onChange={handleImageUpload}
-                />
+                <Input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
               </label>
             )}
           </div>

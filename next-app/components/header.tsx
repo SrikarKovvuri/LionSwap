@@ -89,7 +89,11 @@ export default function Header() {
             </>
             ) : (
             <></>)}
-
+          <Link href="/features">
+            <Button variant="ghost" size="sm">
+              About
+            </Button>
+          </Link>
           {(isLoggedIn)? (
             <Button variant="ghost" size="sm" onClick={() => {setIsLoggedIn(false); localStorage.removeItem("token"); setTimeout(() => {router.push("/login");}, 10);}}>
               Log out
