@@ -6,7 +6,7 @@ import AddToCartButton from "@/components/ui/addToCartButton"
 import { notFound } from "next/navigation"
 import { Product } from "@/lib/types"
 // import ProductGrid from "@/components/product-grid"  <-- you already have this
-
+import BuyNowContact from "@/components/BuyNowContact"
 interface ProductPageProps {
   params: {
     id: string
@@ -44,38 +44,47 @@ export default async function ProductPage({ params }: ProductPageProps) {
               className="object-cover rounded-lg"
             />
           </div>
-          <div className="grid grid-cols-5 gap-2">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="aspect-square relative">
-                <Image
-                  src={product.imageUrl || "/placeholder.svg"}
-                  alt={`${product.title} thumbnail ${i + 1}`}
-                  fill
-                  className="object-cover rounded-md cursor-pointer"
-                />
-              </div>
-            ))}
-          </div>
+          {
+
+            
+  /* 
+  temporary for launch
+  <div className="grid grid-cols-5 gap-2">
+    {[...Array(5)].map((_, i) => (
+      <div key={i} className="aspect-square relative">
+        <Image
+          src={product.imageUrl || "/placeholder.svg"}
+          alt={`${product.title} thumbnail ${i + 1}`}
+          fill
+          className="object-cover rounded-md cursor-pointer"
+        />
+      </div>
+    ))}
+  </div>
+  */
+}
         </div>
 
         <div className="md:w-1/2">
           <div className="mb-6">
             <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
             <p className="text-3xl font-bold mb-2">${product.price.toFixed(2)}</p>
-            <p className="text-sm text-gray-500 mb-6">+ Buyer Protection Fee</p>
+           {/* <p className="text-sm text-gray-500 mb-6">+ Buyer Protection Fee</p> */} 
 
             {product.isAvailable? 
             (<>
               <div className="flex gap-4 mb-6">
-                <AddToCartButton itemId={product.id} itemName={product.title} itemPrice={product.price} itemImage={product.imageUrl} itemCategory={product.category}/>
+                {/* <AddToCartButton itemId={product.id} itemName={product.title} itemPrice={product.price} itemImage={product.imageUrl} itemCategory={product.category}/>
                 <Link href={`/profile/${product.sellerUsername}`}>
                   <Button variant="outline" className="flex-1">
                     Make offer
                   </Button>
                 </Link>
+                */}
               </div>
+              
             
-              <Button className="w-full mb-2 bg-blue-600 hover:bg-blue-700">Buy now</Button>
+              <BuyNowContact sellerUsername={product.sellerUsername} />
               </>
             ) : (
               <div className="bg-orange-500 text-white font-bold text-lg text-center px-4 py-2 rounded-md w-40 shadow-md">

@@ -6,6 +6,7 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy import event
 from sentence_transformers import SentenceTransformer
 from sqlalchemy import LargeBinary
+from sqlalchemy.orm import deferred
 db = SQLAlchemy()
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -45,8 +46,8 @@ class Product(db.Model):
 
 
     #Temp properties we gonna use to carry out the direct blob storage
-    image_data = db.Column(LargeBinary, nullable=True)
-    image_mime = db.Column(db.String(50), nullable = True)
+    image_data = deferred(db.Column(LargeBinary, nullable=True))
+    image_mime = deferred(db.Column(db.String(50), nullable = True))
     #relationships
     reviews = db.relationship("Review", backref="product", lazy=True)
     orders  = db.relationship("Order",  backref="product", lazy=True)

@@ -501,3 +501,15 @@ def get_listing_image(listing_id):
         as_attachment=False,
         download_name=f'listing-{listing_id}'
     )
+
+@market_ops.route('/users/<string:username>/contact', methods=['GET'])
+def get_user_contact(username):
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # only return the two fields you need
+    return jsonify({
+        "email": user.email or "",
+        "phone": user.phone or ""
+    }), 200
