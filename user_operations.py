@@ -513,3 +513,7 @@ def get_user_contact(username):
         "email": user.email or "",
         "phone": user.phone or ""
     }), 200
+
+@market_ops.route("/health", methods=["GET","HEAD"])
+def health_check():
+    return "OK", 200
