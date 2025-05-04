@@ -98,14 +98,18 @@ export default function Header() {
                   )}
                 </Button>
               </Link>
-
+              {/*
               <Link href="/cart" className="hidden sm:block">
                 <Button variant="ghost" size="sm" className="hidden sm:flex items-center gap-2">
                   <ShoppingCart className="h-5 w-5" />
                 </Button>
               </Link>
+              */}
+               
             </>
           ) : null}
+               
+              
 
           <Link href="/features" className="hidden sm:block">
             <Button variant="ghost" size="sm">
