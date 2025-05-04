@@ -48,8 +48,6 @@ def login():
 
 @auth_bp.route('/confirm_credentials', methods = ['POST', 'OPTIONS'])
 def confirm_credentials():
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
     
     username = request.json.get("username")
     email = request.json.get("email")

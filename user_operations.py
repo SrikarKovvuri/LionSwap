@@ -118,8 +118,6 @@ def get_listing_by_username(username):
 @market_ops.route('/listings/specific/user', methods=['GET', 'OPTIONS'])
 @jwt_required()
 def get_listing_by_user():
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
     
     user_id = get_jwt_identity()
     products = Product.query.filter_by(seller_id=user_id).all()
@@ -416,8 +414,6 @@ def delete_profile():
 @market_ops.route('/notifications/user', methods=['GET', 'OPTIONS'])
 @jwt_required()
 def get_notifications_by_user():
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
     
     user_id = get_jwt_identity()
     notifications = Notification.query.filter_by(user_id=user_id).all()
@@ -444,8 +440,6 @@ def get_notifications_by_user():
 @market_ops.route('/notifications/num', methods=['GET', 'OPTIONS'])
 @jwt_required()
 def get_num_notifications():
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
     
     user_id = get_jwt_identity()
     notifications = Notification.query.filter_by(user_id=user_id).all()
