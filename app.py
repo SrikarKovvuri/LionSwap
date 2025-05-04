@@ -23,8 +23,11 @@ from vectordb import vector_bp
 # initialize Flask app
 app = Flask(__name__)
 
-# enable CORS
-CORS(app, supports_credentials=True)
+# enable CORS,v replace this with localhost for testing
+CORS(app,
+     supports_credentials=True,
+     resources={r"/*": {"origins": ["https://www.lion-swap.com"]}})
+
 
 # configure database
 database_uri = os.getenv('DATABASE_URI')
