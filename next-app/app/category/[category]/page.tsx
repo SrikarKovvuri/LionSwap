@@ -15,7 +15,7 @@ type CategoryPageProps = {
 
 async function getListings(category: string) {
   try{
-    const results = await axios.get(`http://localhost:5000/listings/category/${category}`, {});
+    const results = await axios.get(`https://lionswap.onrender.com/listings/category/${category}`, {});
     return results.data.listings;
   }
   catch (err: any) {

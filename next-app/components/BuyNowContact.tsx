@@ -22,7 +22,7 @@ export default function BuyNowContact({ sellerUsername }: BuyNowContactProps) {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`http://localhost:5000/users/${sellerUsername}/contact`)
+      const res = await fetch(`https://lionswap.onrender.com/users/${sellerUsername}/contact`)
       if (!res.ok) throw new Error(`Status ${res.status}`)
       const data = await res.json()
       // expecting { email: "...", phone: "..." }

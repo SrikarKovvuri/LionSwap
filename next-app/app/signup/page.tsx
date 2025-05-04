@@ -15,7 +15,7 @@ export default function SignUp() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/signup',
+      const response = await axios.post('https://lionswap.onrender.com/signup',
         {
           username,
           email,
@@ -38,7 +38,7 @@ export default function SignUp() {
   const confirmCredentials = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/confirm_credentials',
+      const response = await axios.post('https://lionswap.onrender.com/confirm_credentials',
         {
           username,
           email,

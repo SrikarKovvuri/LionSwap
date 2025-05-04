@@ -27,7 +27,7 @@ export default function SearchPage() {
     const token = localStorage.getItem("token");
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/search",
+        "https://lionswap.onrender.com/search",
         { query },
         { headers: { Authorization: `Bearer ${token}` } }
       );

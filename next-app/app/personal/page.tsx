@@ -24,7 +24,7 @@ export default function ProfilePage() {
       async function fetchUser() {
           try {
               const token = localStorage.getItem("token");
-              const response = await axios.get("http://localhost:5000/users/profile", {
+              const response = await axios.get("https://lionswap.onrender.com/users/profile", {
               headers: {
                   Authorization: `Bearer ${token}`, // token inherently has userId, no need to pass it in
                   "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export default function ProfilePage() {
       async function fetchProducts() {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get("http://localhost:5000/listings/specific/user", {
+            const response = await axios.get("https://lionswap.onrender.com/listings/specific/user", {
             headers: {
                 Authorization: `Bearer ${token}`, // token inherently has userId, no need to pass it in
                 "Content-Type": "application/json",

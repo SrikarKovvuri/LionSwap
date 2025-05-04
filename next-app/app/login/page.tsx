@@ -26,7 +26,7 @@ export default function Login() {
     };
 
     try {
-      const response = await axios.post("http://localhost:5000/login", data);
+      const response = await axios.post("https://lionswap.onrender.com/login", data);
       if (response.status === 201) {
         const { token } = response.data;
         localStorage.setItem("token", token);

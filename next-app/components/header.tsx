@@ -32,7 +32,7 @@ export default function Header() {
     async function fetchNumNotifs() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/notifications/num", {
+        const response = await axios.get("https://lionswap.onrender.com/notifications/num", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

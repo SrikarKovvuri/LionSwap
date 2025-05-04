@@ -25,7 +25,7 @@ export default function NotificationsPage() {
     async function fetchNotifications() {
       try {
           const token = localStorage.getItem("token");
-          const response = await axios.get("http://localhost:5000/notifications/user", {
+          const response = await axios.get("https://lionswap.onrender.com/notifications/user", {
           headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",

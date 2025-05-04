@@ -118,7 +118,7 @@ export default function NewListingPage() {
       }
 
       await axios.post(
-        "http://localhost:5000/listings", form,
+        "https://lionswap.onrender.com/listings", form,
         {
           headers: {
             Authorization: `Bearer ${token}`,

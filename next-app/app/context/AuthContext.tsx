@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token');
       const res = await axios.get<{ user: User }>(
-        'http://localhost:5000/current_user',
+        'https://lionswap.onrender.com/current_user',
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setUser(res.data.user);

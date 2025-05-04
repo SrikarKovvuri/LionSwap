@@ -15,7 +15,7 @@ export default function OrderGrid() {
       try {
         setLoading(true)
         const token = localStorage.getItem("token")
-        const response = await axios.get("http://localhost:5000/orders/user/", {
+        const response = await axios.get("https://lionswap.onrender.com/orders/user/", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
