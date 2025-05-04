@@ -10,7 +10,7 @@ flow = InstalledAppFlow.from_client_config({
     "installed": {
         "client_id": os.getenv("GMAIL_CLIENT_ID"),
         "client_secret": os.getenv("GMAIL_CLIENT_SECRET"),
-        "redirect_uris": ["http://localhost"],
+        "redirect_uris": ["https://lionswap.onrender.com"],
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
         "token_uri": "https://oauth2.googleapis.com/token"
     }
