@@ -24,8 +24,6 @@ products = []
 @jwt_required()
 def search():
     # handle CORS preflight
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
 
     data = request.get_json() or {}
     question = data.get("query", "").strip()

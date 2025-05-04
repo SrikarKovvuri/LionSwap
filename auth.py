@@ -24,8 +24,6 @@ USER_EMAIL = os.getenv("GMAIL_USER")
 auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/login', methods = ['POST', 'OPTIONS'])
 def login():
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
     
     username = request.json.get("username")
     password = request.json.get("password")
@@ -111,8 +109,6 @@ def send_email(to, subject, body):
 
 @auth_bp.route('/signup', methods = ['POST', 'OPTIONS'])
 def signup():
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
     
     username = request.json.get("username")
     email = request.json.get("email")
