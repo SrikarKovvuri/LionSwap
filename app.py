@@ -5,18 +5,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
-from flask_migrate import Migrate
-from sqlalchemy import event
-from sqlalchemy.engine import Engine
-import stripe
-from pgvector.psycopg2 import register_vector  # register pgvector adapter
-from models import db
 
-from auth import auth_bp
-from cart import cart_bp
-from user_operations import market_ops
-from vectordb import vector_bp
 
 
 
@@ -35,9 +24,20 @@ CORS(
       ]
     }},
     methods=["GET","POST","PUT","DELETE","OPTIONS"],
-    allow_headers=["Content-Type","Authorization"]
+    allow_headers=["Content-Type","Authorization", "X-Requested-With"]
 )
+from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+import stripe
+from pgvector.psycopg2 import register_vector  # register pgvector adapter
+from models import db
 
+from auth import auth_bp
+from cart import cart_bp
+from user_operations import market_ops
+from vectordb import vector_bp
 # configure database
 database_uri = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri

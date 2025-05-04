@@ -77,12 +77,10 @@ def create_checkout_session():
         return jsonify({"error": str(err)}), 400
 
 
-@stripe_bp.route("/onboard", methods=["OPTIONS", "POST"])
+@stripe_bp.route("/onboard", methods=[ "POST"])
 @jwt_required()
 def onboard():
     # 1) CORS preflight
-    if request.method == "OPTIONS":
-        return jsonify({}), 200
 
     user = User.query.get_or_404(get_jwt_identity())
 
