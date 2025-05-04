@@ -20,7 +20,7 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 products = []
 
 
-@vector_bp.route("/search", methods=['POST', 'OPTIONS'])
+@vector_bp.route("/search", methods=['POST'])
 @jwt_required()
 def search():
     # handle CORS preflight

@@ -22,7 +22,7 @@ USER_EMAIL = os.getenv("GMAIL_USER")
 
 
 auth_bp = Blueprint('auth', __name__)
-@auth_bp.route('/login', methods = ['POST', 'OPTIONS'])
+@auth_bp.route('/login', methods = ['POST'])
 def login():
     
     username = request.json.get("username")
@@ -44,7 +44,7 @@ def login():
     }), 201
 
 
-@auth_bp.route('/confirm_credentials', methods = ['POST', 'OPTIONS'])
+@auth_bp.route('/confirm_credentials', methods = ['POST'])
 def confirm_credentials():
     
     username = request.json.get("username")
@@ -107,7 +107,7 @@ def send_email(to, subject, body):
 
 
 
-@auth_bp.route('/signup', methods = ['POST', 'OPTIONS'])
+@auth_bp.route('/signup', methods = ['POST'])
 def signup():
     
     username = request.json.get("username")

@@ -115,7 +115,7 @@ def get_listing_by_username(username):
     return jsonify({"listings": listings, "user": user_data}), 200
 
 # retrieve products by a specific user
-@market_ops.route('/listings/specific/user', methods=['GET', 'OPTIONS'])
+@market_ops.route('/listings/specific/user', methods=['GET'])
 @jwt_required()
 def get_listing_by_user():
     
@@ -330,7 +330,7 @@ def get_order(order_id):
     return jsonify({"order": order_data}), 200
 
 # Retrieve order details for specific user
-@market_ops.route('/orders/user/', methods=['GET', 'OPTIONS'])
+@market_ops.route('/orders/user/', methods=['GET'])
 @jwt_required()
 def get_order_by_user():
     user_id = get_jwt_identity()
@@ -411,7 +411,7 @@ def delete_profile():
 
 
 # retrieve products by a specific user
-@market_ops.route('/notifications/user', methods=['GET', 'OPTIONS'])
+@market_ops.route('/notifications/user', methods=['GET'])
 @jwt_required()
 def get_notifications_by_user():
     
@@ -437,7 +437,7 @@ def get_notifications_by_user():
 
 
 # retrieve products by a specific user
-@market_ops.route('/notifications/num', methods=['GET', 'OPTIONS'])
+@market_ops.route('/notifications/num', methods=['GET'])
 @jwt_required()
 def get_num_notifications():
     
