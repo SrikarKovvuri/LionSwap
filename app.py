@@ -27,7 +27,13 @@ app = Flask(__name__)
 CORS(
     app,
     supports_credentials=True,
-    origins="https://lionswap.onrender.com",         # or ["https://www.lion-swap.com"]
+    resources={r"/*": {
+      "origins": [
+        "https://lion-swap.com",
+        "https://www.lion-swap.com",
+        "http://localhost:3000"
+      ]
+    }},
     methods=["GET","POST","PUT","DELETE","OPTIONS"],
     allow_headers=["Content-Type","Authorization"]
 )
