@@ -17,10 +17,25 @@ import type { Product } from '@/lib/types';
 
 async function getListings(): Promise<Product[]> {
   try {
+    // Add cache-busting timestamp to prevent caching
+    const timestamp = new Date().getTime();
     const { data } = await axios.get<{ listings: Product[] }>(
-      'https://lionswap.onrender.com/listings'
+      `https://lionswap.onrender.com/listings?t=${timestamp}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      }
     );
-    return data.listings;
+    
+    // Process listings to ensure all show as available in the homepage view
+    const processedListings = data.listings.map(listing => ({
+      ...listing,
+      isAvailable: true
+    }));
+    
+    return processedListings;
   } catch (err: any) {
     console.error(
       'getListings(TypeScript) error',

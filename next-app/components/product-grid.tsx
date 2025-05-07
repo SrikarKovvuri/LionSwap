@@ -1,10 +1,12 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
 import { Tag, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/lib/types";
 
-export const dynamic   = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 interface ProductGridProps {
@@ -38,13 +40,20 @@ export default function ProductGrid({ products }: ProductGridProps) {
                 </div>
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <Image
-                src={product.imageUrl || "/placeholder.svg"}
-                alt={product.title || "Product image"}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
-              />
+              {product.imageUrl ? (
+                <Image
+                  src={product.imageUrl}
+                  alt={product.title || "Product image"}
+                  fill
+                  unoptimized={true} // Key fix: prevent Next.js from optimizing external images
+                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                  <span className="text-gray-400">No image</span>
+                </div>
+              )}
             </div>
             
             {/* Category Badge */}

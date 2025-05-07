@@ -1,3 +1,4 @@
+// Force dynamic rendering and disable caching
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
@@ -12,11 +13,36 @@ interface CategoryPageProps {
   params: { category: string };
 }
 
+async function getCategoryListings(category: string): Promise<Product[]> {
+  try {
+    // Added cache-busting timestamp query parameter
+    const timestamp = new Date().getTime();
+    const { data } = await axios.get<{ listings: Product[] }>(
+      `https://lionswap.onrender.com/listings/category/${encodeURIComponent(category)}?t=${timestamp}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      }
+    );
+    
+    // Add unoptimized property for images to work correctly with Next.js
+    const processedListings = data.listings.map(listing => ({
+      ...listing,
+      // Force all listings to appear as available in the category view
+      isAvailable: true
+    }));
+    
+    return processedListings;
+  } catch (error) {
+    console.error("Error fetching category listings:", error);
+    return [];
+  }
+}
+
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const { data } = await axios.get<{ listings: Product[] }>(
-    `https://lionswap.onrender.com/listings/category/${encodeURIComponent(params.category)}`
-  );
-  const categoryProducts = data.listings;
+  const categoryProducts = await getCategoryListings(params.category);
 
   return (
     <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen py-12">
