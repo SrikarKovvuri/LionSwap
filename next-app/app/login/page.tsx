@@ -1,14 +1,17 @@
 "use client"
-import React, { useState, createContext, useContext } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext"
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginFailed, setLoginFailed] = useState(false);
-  const { isLoggedIn, setIsLoggedIn } = useAuth(); // import global context variable & setter function
+  const [isLoading, setIsLoading] = useState(false);
+  const { setIsLoggedIn, refetchUser } = useAuth(); // Import refetchUser from context
+  const router = useRouter();
 
   const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -20,6 +23,9 @@ export default function Login() {
 
   const handleData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    setLoginFailed(false);
+    
     const data = {
       username,
       password,
@@ -29,17 +35,27 @@ export default function Login() {
       const response = await axios.post("https://lionswap.onrender.com/login", data);
       if (response.status === 201) {
         const { token } = response.data;
+        
+        // Store token
         localStorage.setItem("token", token);
-        alert("Login Successful");
-        window.location.href = "/";
+        
+        // Set logged in state first
         setIsLoggedIn(true);
-        setLoginFailed(false);
-      }else{
+        
+        // Fetch user data using the refetchUser function from context
+        await refetchUser();
+        
+        // Only navigate after state is updated
+        router.push("/");
+        router.refresh();
+      } else {
         setLoginFailed(true);
       }
     } catch (error: any) {
       console.error(error.response?.data || error.message);
-      alert(error.response?.data?.error || "Error during login. Please try again.");
+      setLoginFailed(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -70,6 +86,7 @@ export default function Login() {
                 minLength={6}
                 maxLength={16}
                 placeholder="Enter your username"
+                disabled={isLoading}
               />
             </div>
 
@@ -90,21 +107,23 @@ export default function Login() {
                 minLength={6}
                 maxLength={16}
                 placeholder="Enter your password"
+                disabled={isLoading}
               />
             </div>
 
             <button 
               type="submit" 
-              className="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
+              className="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 transition-colors disabled:bg-blue-400"
+              disabled={isLoading}
             >
-              Login
+              {isLoading ? "Logging in..." : "Login"}
             </button>
           </form>
 
           {loginFailed && (
             <div className="mt-6 text-center">
               <p className="text-sm text-red-600">
-                Login failed, please try again
+                Login failed, please check your credentials and try again
               </p>
             </div>
           )}
