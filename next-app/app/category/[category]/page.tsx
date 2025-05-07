@@ -1,34 +1,22 @@
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import ProductGrid from "@/components/product-grid"
-import { notFound } from "next/navigation"
-import { ArrowLeft, Package, Plus, Tag } from "lucide-react"
-import { Product } from "@/lib/types"
+import axios from 'axios';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import ProductGrid from '@/components/product-grid';
+import { ArrowLeft, Package, Plus, Tag } from 'lucide-react';
+import type { Product } from '@/lib/types';
 
-// Props type for the page component
 interface CategoryPageProps {
-  params: {
-    category: string;
-  };
-}
-
-// Fetch listings at runtime with no caching
-async function getListings(category: string): Promise<Product[]> {
-  const res = await fetch(
-    `https://lionswap.onrender.com/listings/category/${encodeURIComponent(category)}`,
-    { cache: 'no-store' }
-  );
-  if (!res.ok) throw new Error(`Failed to fetch listings: ${res.status}`);
-  const data = await res.json();
-  return data.listings as Product[];
+  params: { category: string };
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const { category } = params;
-  const categoryProducts = await getListings(category);
+  const { data } = await axios.get<{ listings: Product[] }>(
+    `https://lionswap.onrender.com/listings/category/${encodeURIComponent(params.category)}`
+  );
+  const categoryProducts = data.listings;
 
   return (
     <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen py-12">
@@ -39,17 +27,15 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <Tag className="h-6 w-6 text-blue-600" />
-              </div>
-              <h1 className="text-3xl font-bold text-blue-800">{decodeURIComponent(category)}</h1>
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-100 p-2 rounded-lg">
+              <Tag className="h-6 w-6 text-blue-600" />
             </div>
+            <h1 className="text-3xl font-bold text-blue-800">{decodeURIComponent(params.category)}</h1>
           </div>
         </div>
 
-        {/* Main content */}
+        {/* Listings grid or empty state */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
           <div className="border-b border-gray-100 pb-4 mb-6">
             <p className="text-blue-700 font-medium">
@@ -69,7 +55,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           )}
         </div>
 
-        {/* CTA Section */}
+        {/* Call to Action */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl shadow-lg p-8 text-center text-white">
           <h2 className="text-2xl font-bold mb-4">Have something to sell?</h2>
           <p className="mb-6 max-w-md mx-auto opacity-90">
