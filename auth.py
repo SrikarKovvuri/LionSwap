@@ -11,6 +11,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
 from flask_cors import cross_origin
+from flask import current_app
 load_dotenv()
 
 # Load from .env
@@ -22,28 +23,33 @@ USER_EMAIL = os.getenv("GMAIL_USER")
 
 
 auth_bp = Blueprint('auth', __name__)
-@auth_bp.route('/login', methods = ['POST'])
+
+
+@auth_bp.route('/login', methods=['POST'])
 @cross_origin(origin=["https://lion-swap.com","https://www.lion-swap.com"],
               supports_credentials=True)
 def login():
-    
-    username = request.json.get("username")
-    password = request.json.get("password")
+    try:
+        username = request.json.get("username")
+        password = request.json.get("password")
+        if not username or not password:
+            return jsonify({"error": "Username and Password are required"}), 400
 
-    if not username or not password:
-        return jsonify({"error": "Username and Password are required"}), 400
-    
-    user = User.query.filter_by(username = username).first()
+        user = User.query.filter_by(username=username).first()
+        if not user or not check_password_hash(user.password_hash, password):
+            return jsonify({"error": "Invalid username or password"}), 401
 
-    if not user or not check_password_hash(user.password_hash, password):
-        return jsonify({"error": "Invalid username or password"})
-    
-    token = create_access_token(identity=str(user.id))
+        token = create_access_token(identity=str(user.id))
+        return jsonify({"message": "Login Successful", "token": token}), 201
 
-    return jsonify({
-        "message": "Login Successful",
-        "token": token
-    }), 201
+    except Exception as e:
+        # this will both log it in your server logs *and* return a JSON+Cors so the browser sees it
+        current_app.logger.exception("💥 login crashed")
+        resp = jsonify({"error": str(e)})
+        # re‑apply CORS headers in case flask‑cors was bypassed
+        resp.headers["Access-Control-Allow-Origin"] = "https://www.lion-swap.com"
+        resp.headers["Access-Control-Allow-Credentials"] = "true"
+        return resp, 500
 
 
 @auth_bp.route('/confirm_credentials', methods = ['POST'])
