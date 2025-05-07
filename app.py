@@ -23,6 +23,7 @@ CORS(
     resources={r"/*": {
       "origins": [
         "https://www.lion-swap.com",
+        "https://lion-swap.com",
         "http://localhost:3000",
       ]
     }},

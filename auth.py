@@ -10,7 +10,7 @@ from email.mime.text import MIMEText
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
-
+from flask_cors import cross_origin
 load_dotenv()
 
 # Load from .env
@@ -23,6 +23,8 @@ USER_EMAIL = os.getenv("GMAIL_USER")
 
 auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/login', methods = ['POST'])
+@cross_origin(origin=["https://lion-swap.com","https://www.lion-swap.com"],
+              supports_credentials=True)
 def login():
     
     username = request.json.get("username")
