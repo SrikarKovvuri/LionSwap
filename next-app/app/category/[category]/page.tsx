@@ -1,36 +1,35 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import ProductGrid from "@/components/product-grid"
-import { products } from "@/lib/sample-data"
 import { notFound } from "next/navigation"
-import axios from "axios";
-import { ArrowLeft, Package, Plus, Tag } from "lucide-react";
+import { ArrowLeft, Package, Plus, Tag } from "lucide-react"
+import { Product } from "@/lib/types"
 
 // Props type for the page component
-type CategoryPageProps = {
+interface CategoryPageProps {
   params: {
     category: string;
   };
-};
-
-async function getListings(category: string) {
-  try{
-    const results = await axios.get(`https://lionswap.onrender.com/listings/category/${category}`, {});
-    return results.data.listings;
-  }
-  catch (err: any) {
-    console.error("getListings(TypeScript) error", err.response?.data || err.message);
-    return []
-  }
 }
 
-export default async function CategoryPage(props: CategoryPageProps) {
+// Fetch listings at runtime with no caching
+async function getListings(category: string): Promise<Product[]> {
+  const res = await fetch(
+    `https://lionswap.onrender.com/listings/category/${encodeURIComponent(category)}`,
+    { cache: 'no-store' }
+  );
+  if (!res.ok) throw new Error(`Failed to fetch listings: ${res.status}`);
+  const data = await res.json();
+  return data.listings as Product[];
+}
 
-  const params = await props.params;
+export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category } = params;
-  
   const categoryProducts = await getListings(category);
-  
+
   return (
     <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen py-12">
       <div className="container mx-auto px-4">
@@ -40,7 +39,6 @@ export default async function CategoryPage(props: CategoryPageProps) {
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
-          
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-blue-100 p-2 rounded-lg">
@@ -50,7 +48,7 @@ export default async function CategoryPage(props: CategoryPageProps) {
             </div>
           </div>
         </div>
-        
+
         {/* Main content */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
           <div className="border-b border-gray-100 pb-4 mb-6">
@@ -58,7 +56,6 @@ export default async function CategoryPage(props: CategoryPageProps) {
               {categoryProducts.length} {categoryProducts.length === 1 ? 'item' : 'items'} found
             </p>
           </div>
-          
           {categoryProducts.length > 0 ? (
             <ProductGrid products={categoryProducts} />
           ) : (
@@ -71,7 +68,7 @@ export default async function CategoryPage(props: CategoryPageProps) {
             </div>
           )}
         </div>
-        
+
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl shadow-lg p-8 text-center text-white">
           <h2 className="text-2xl font-bold mb-4">Have something to sell?</h2>
@@ -88,14 +85,4 @@ export default async function CategoryPage(props: CategoryPageProps) {
       </div>
     </div>
   );
-}
-
-// Generate static paths for common categories
-export async function generateStaticParams() {
-  // Get unique categories from your products data
-  const categories = [...new Set(products.map(product => product.category))];
-  
-  return categories.map(category => ({
-    category,
-  }));
 }

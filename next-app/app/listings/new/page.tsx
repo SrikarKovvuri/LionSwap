@@ -250,9 +250,9 @@ export default function NewListingPage() {
                         <SelectItem value="Furniture">Furniture</SelectItem>
                         <SelectItem value="Clothing">Clothing</SelectItem>
                         <SelectItem value="Accessories">Accessories</SelectItem>
-                        <SelectItem value="Dorm">Dorm Essentials</SelectItem>
+                        <SelectItem value="Dorm Essentials">Dorm Essentials</SelectItem>
                         <SelectItem value="Sports">Sports</SelectItem>
-                        <SelectItem value="Tickets">Event Tickets</SelectItem>
+                        <SelectItem value="Event Tickets">Event Tickets</SelectItem>
                         <SelectItem value="Other">Other</SelectItem>
                       </SelectContent>
                     </Select>
