@@ -15,7 +15,7 @@ export default function SignUp() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post('https://lionswap.onrender.com/signup',
+      const response = await axios.post('https://lionswap.onrender.com//signup',
         {
           username,
           email,
@@ -38,7 +38,7 @@ export default function SignUp() {
   const confirmCredentials = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post('https://lionswap.onrender.com/confirm_credentials',
+      const response = await axios.post('https://lionswap.onrender.com//confirm_credentials',
         {
           username,
           email,
@@ -166,7 +166,7 @@ export default function SignUp() {
 
             {(errorNum===401) && (<div className="mt-3 text-center">
               <p className="text-sm text-red-500">
-                Email must be @columbia.edu
+                Email must be @columbia.edu or @barnard.edu
               </p>
             </div>)}
 
