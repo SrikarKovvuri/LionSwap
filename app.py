@@ -3,24 +3,27 @@ from dotenv import load_dotenv
 load_dotenv(override = True)
 import os
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
-
+from werkzeug.exceptions import BadRequest
 
 
 
 # initialize Flask app
 app = Flask(__name__)
-
+@app.errorhandler(BadRequest)
+def bad_json(e):
+    # Whatever JSON error Flask/Werkzeug threw, return a normal JSON reply
+    # *through* Flask so CORS can still add its headers.
+    return jsonify({"error": "Invalid or missing JSON in request body"}), 400
 # enable CORS,v replace this with localhost for testing
 CORS(
     app,
     supports_credentials=True,
     resources={r"/*": {
       "origins": [
-        "https://lion-swap.com",
         "https://www.lion-swap.com",
-        "http://localhost:3000"
+        "http://localhost:3000",
       ]
     }},
     methods=["GET","POST","PUT","DELETE","OPTIONS"],
