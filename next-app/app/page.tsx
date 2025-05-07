@@ -5,6 +5,9 @@ import ProductGrid from "@/components/product-grid"
 import axios from "axios";
 import { Sparkles, BookOpen, Laptop, Shirt, ArrowRight } from "lucide-react"
 
+export const dynamic   = 'force-dynamic';
+export const revalidate = 0;
+
 async function getListings() {
   try{
     const results = await axios.get('https://lionswap.onrender.com/listings', {});

@@ -4,6 +4,9 @@ import { Tag, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/lib/types";
 
+export const dynamic   = 'force-dynamic';
+export const revalidate = 0;
+
 interface ProductGridProps {
   products: Product[];
 }
