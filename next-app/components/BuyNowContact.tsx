@@ -1,6 +1,7 @@
-"use client"
+'use client'
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
 interface BuyNowContactProps {
@@ -8,24 +9,38 @@ interface BuyNowContactProps {
 }
 
 export default function BuyNowContact({ sellerUsername }: BuyNowContactProps) {
+  const router = useRouter()
   const [contact, setContact] = useState<{email: string, phone: string} | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleClick = async () => {
-    // if we already have contact info, hide it
+    // 1️⃣ Check for auth token first
+    const token = localStorage.getItem("token")
+    if (!token) {
+      // not logged in → send them to login
+      router.push("/login")
+      return
+    }
+
+    // 2️⃣ If already fetched, toggle hide
     if (contact) {
       setContact(null)
       return
     }
 
+    // 3️⃣ Otherwise fetch contact info
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`https://lionswap.onrender.com/users/${sellerUsername}/contact`)
+      const res = await fetch(
+        `https://lionswap.onrender.com/users/${sellerUsername}/contact`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      )
       if (!res.ok) throw new Error(`Status ${res.status}`)
       const data = await res.json()
-      // expecting { email: "...", phone: "..." }
       setContact({ email: data.email, phone: data.phone })
     } catch (err: any) {
       setError(err.message || "Failed to load contact")
@@ -43,8 +58,8 @@ export default function BuyNowContact({ sellerUsername }: BuyNowContactProps) {
         {loading
           ? "Loading…"
           : contact
-          ? "Hide contact"
-          : "Buy now"}
+            ? "Hide contact"
+            : "Buy now"}
       </Button>
 
       {error && (
