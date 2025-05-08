@@ -122,7 +122,7 @@ export default function AboutPage() {
         
         {/* Footer */}
         <div className="text-center mt-20 text-gray-500">
-          <p>© 2025 LionSwap • Made with 💙 for Columbia University Students</p>
+          <p>© 2025 LionSwap • Made for Columbia and Barnard Students</p>
         </div>
       </div>
     </div>

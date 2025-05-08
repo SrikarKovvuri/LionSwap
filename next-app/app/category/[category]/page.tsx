@@ -13,12 +13,52 @@ interface CategoryPageProps {
   params: { category: string };
 }
 
+// Helper function to map URL slugs to database category names
+function getCategoryName(slug: string): string {
+  const categoryMap: Record<string, string> = {
+    "Textbooks": "Textbooks",
+    "Electronics": "Electronics",
+    "Furniture": "Furniture",
+    "Clothing": "Clothing",
+    "Accessories": "Accessories",
+    "Dorm": "Dorm Essentials", // This is the critical mapping
+    "Sports": "Sports",
+    "Tickets": "Event Tickets",
+    "Other": "Other"
+  };
+  
+  return categoryMap[slug] || slug;
+}
+
+// Helper function to get display name (for UI)
+function getDisplayName(slug: string): string {
+  const displayMap: Record<string, string> = {
+    "Textbooks": "Textbooks",
+    "Electronics": "Electronics", 
+    "Furniture": "Furniture",
+    "Clothing": "Clothing",
+    "Accessories": "Accessories",
+    "Dorm": "Dorm Essentials",
+    "Sports": "Sports",
+    "Tickets": "Event Tickets",
+    "Other": "Other"
+  };
+  
+  return displayMap[slug] || decodeURIComponent(slug);
+}
+
 async function getCategoryListings(category: string): Promise<Product[]> {
   try {
+    // Convert URL slug to actual category name used in database
+    const actualCategory = getCategoryName(category);
+    
     // Added cache-busting timestamp query parameter
     const timestamp = new Date().getTime();
+    
+    console.log(`Fetching category: ${actualCategory}`); // Debug log
+    
     const { data } = await axios.get<{ listings: Product[] }>(
-      `https://lionswap.onrender.com/listings/category/${encodeURIComponent(category)}?t=${timestamp}`,
+      `https://lionswap.onrender.com/listings/category/${encodeURIComponent(actualCategory)}?t=${timestamp}`,
       {
         headers: {
           'Cache-Control': 'no-cache',
@@ -42,7 +82,14 @@ async function getCategoryListings(category: string): Promise<Product[]> {
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const categoryProducts = await getCategoryListings(params.category);
+  // Get the category slug from params (nextjs async component fix)
+  const categorySlug = params.category;
+  
+  // Get the display name for UI
+  const displayName = getDisplayName(categorySlug);
+  
+  // Fetch listings using the category parameter
+  const categoryProducts = await getCategoryListings(categorySlug);
 
   return (
     <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen py-12">
@@ -57,7 +104,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             <div className="bg-blue-100 p-2 rounded-lg">
               <Tag className="h-6 w-6 text-blue-600" />
             </div>
-            <h1 className="text-3xl font-bold text-blue-800">{decodeURIComponent(params.category)}</h1>
+            <h1 className="text-3xl font-bold text-blue-800">{displayName}</h1>
           </div>
         </div>
 
