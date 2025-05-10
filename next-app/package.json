@@ -1,11 +1,7 @@
 {
-  "name": "lionswap",
-  "version": "1.0.0",
-  "description": "Dependency List: - npm install - lucide-react",
-  "main": "index.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "name": "my-v0-project",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -62,8 +58,6 @@
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.6",
     "vaul": "^0.9.6",
     "zod": "^3.24.1"
   },
