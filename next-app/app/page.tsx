@@ -30,10 +30,12 @@ async function getListings(): Promise<Product[]> {
     );
     
     // Process listings to ensure all show as available in the homepage view
-    const processedListings = data.listings.map(listing => ({
-      ...listing,
-      isAvailable: true
-    }));
+    const processedListings = data.listings
+    
+    // .map(listing => ({
+    //   ...listing,
+    //   isAvailable: true
+    // }));
     
     return processedListings;
   } catch (err: any) {
