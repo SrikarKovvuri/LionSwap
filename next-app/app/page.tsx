@@ -17,10 +17,33 @@ import type { Product } from '@/lib/types';
 
 async function getListings(): Promise<Product[]> {
   try {
-    // Add cache-busting timestamp to prevent caching
+    const firstCategory = "Textbooks";
+    const secondCategory = "Electronics";
+    const thirdCategory = "Furniture";
+    
+    // Added cache-busting timestamp query parameter
     const timestamp = new Date().getTime();
-    const { data } = await axios.get<{ listings: Product[] }>(
-      `https://lionswap.onrender.com/listings?t=${timestamp}`,
+        
+    const { firstData } = await axios.get<{ listings: Product[] }>(
+      `https://lionswap.onrender.com/listings/category/${encodeURIComponent(firstCategory)}?t=${timestamp}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      }
+    );
+    const { secondData } = await axios.get<{ listings: Product[] }>(
+      `https://lionswap.onrender.com/listings/category/${encodeURIComponent(secondCategory)}?t=${timestamp}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      }
+    );
+    const { thirdData } = await axios.get<{ listings: Product[] }>(
+      `https://lionswap.onrender.com/listings/category/${encodeURIComponent(thirdCategory)}?t=${timestamp}`,
       {
         headers: {
           'Cache-Control': 'no-cache',
@@ -29,15 +52,19 @@ async function getListings(): Promise<Product[]> {
       }
     );
     
-    // Process listings to ensure all show as available in the homepage view
-    const processedListings = data.listings
+    // Add unoptimized property for images to work correctly with Next.js
+    const textbookListings = firstData.listings
+    const electronicsListings = secondData.listings
+    const furnitureListings = thirdData.listings
+
+    const combinedListings = [...textbookListings, ...electronicsListings, ...furnitureListings]
     
     // .map(listing => ({
     //   ...listing,
     //   isAvailable: true
     // }));
     
-    return processedListings;
+    return combinedListings;
   } catch (err: any) {
     console.error(
       'getListings(TypeScript) error',
@@ -158,23 +185,23 @@ export default async function Home() {
             </div>
           </section>
 
-          {/* Clothing Section */}
+          {/* Furniture Section */}
           <section className="mb-16">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
                 <div className="bg-blue-100 w-12 h-12 rounded-xl flex items-center justify-center">
                   <Shirt className="h-6 w-6 text-blue-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-blue-800">Clothing</h2>
+                <h2 className="text-2xl font-bold text-blue-800">Furniture</h2>
               </div>
-              <Link href="/category/Clothing" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium">
+              <Link href="/category/Furniture" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium">
                 See all
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-lg shadow-blue-100">
               <ProductGrid
-                products={listings.filter((p) => p.category === 'Clothing').slice(0, 4)}
+                products={listings.filter((p) => p.category === 'Furniture').slice(0, 4)}
               />
             </div>
           </section>
@@ -188,7 +215,7 @@ export default async function Home() {
               Join hundreds of Columbia students already buying and selling on campus with
               zero fees.
             </p>
-            <Link href="/auth/signup">
+            <Link href="/listings/new">
               <Button className="bg-blue-600 hover:bg-blue-700 px-8 py-6 rounded-xl text-lg font-medium shadow-lg hover:shadow-xl transform transition-all duration-300 hover:-translate-y-1">
                 Get Started Now
               </Button>
