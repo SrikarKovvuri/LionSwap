@@ -24,7 +24,7 @@ async function getListings(): Promise<Product[]> {
     // Added cache-busting timestamp query parameter
     const timestamp = new Date().getTime();
         
-    const { firstData } = await axios.get<{ listings: Product[] }>(
+    const firstResponse = await axios.get<{ listings: Product[] }>(
       `https://lionswap.onrender.com/listings/category/${encodeURIComponent(firstCategory)}?t=${timestamp}`,
       {
         headers: {
@@ -33,7 +33,7 @@ async function getListings(): Promise<Product[]> {
         }
       }
     );
-    const { secondData } = await axios.get<{ listings: Product[] }>(
+    const secondResponse = await axios.get<{ listings: Product[] }>(
       `https://lionswap.onrender.com/listings/category/${encodeURIComponent(secondCategory)}?t=${timestamp}`,
       {
         headers: {
@@ -42,7 +42,7 @@ async function getListings(): Promise<Product[]> {
         }
       }
     );
-    const { thirdData } = await axios.get<{ listings: Product[] }>(
+    const thirdResponse = await axios.get<{ listings: Product[] }>(
       `https://lionswap.onrender.com/listings/category/${encodeURIComponent(thirdCategory)}?t=${timestamp}`,
       {
         headers: {
@@ -52,17 +52,12 @@ async function getListings(): Promise<Product[]> {
       }
     );
     
-    // Add unoptimized property for images to work correctly with Next.js
-    const textbookListings = firstData.listings
-    const electronicsListings = secondData.listings
-    const furnitureListings = thirdData.listings
+    // Correctly access the data from the response objects
+    const textbookListings = firstResponse.data.listings || [];
+    const electronicsListings = secondResponse.data.listings || [];
+    const furnitureListings = thirdResponse.data.listings || [];
 
-    const combinedListings = [...textbookListings, ...electronicsListings, ...furnitureListings]
-    
-    // .map(listing => ({
-    //   ...listing,
-    //   isAvailable: true
-    // }));
+    const combinedListings = [...textbookListings, ...electronicsListings, ...furnitureListings];
     
     return combinedListings;
   } catch (err: any) {
