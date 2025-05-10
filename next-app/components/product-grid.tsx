@@ -32,7 +32,7 @@ export default function ProductGrid({ products }: ProductGridProps) {
           <Link href={`/listings/${product.id}`} className="block relative">
             <div className="aspect-square relative overflow-hidden">
               {(product.isAvailable === false) && (
-                <div className="absolute top-2 right-2 z-20 bg-orange-500 text-white text-sm font-bold px-2 py-1 rounded">
+                <div className="absolute top-2 right-2 z-20 bg-orange-500 text-white text-base font-extrabold px-3 py-2 rounded shadow-md transform rotate-0">
                   SOLD
                 </div>
               )}
