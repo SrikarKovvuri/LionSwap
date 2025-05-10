@@ -13,7 +13,7 @@ def get_listings():
     
     query = Product.query
 
-    products = query.limit(20).all()
+    products = query.limit(30).all()
 
     listings = []
     for p in products:
