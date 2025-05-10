@@ -67,8 +67,10 @@ async function getCategoryListings(category: string): Promise<Product[]> {
       }
     );
     
-    // // Add unoptimized property for images to work correctly with Next.js
-    // const processedListings = data.listings.map(listing => ({
+    // Add unoptimized property for images to work correctly with Next.js
+    const processedListings = data.listings
+    
+    // .map(listing => ({
     //   ...listing,
     //   // Force all listings to appear as available in the category view
     //   isAvailable: true
