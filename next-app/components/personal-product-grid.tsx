@@ -45,9 +45,10 @@ export default function PersonalProductGrid({ products, onProductUpdate }: Perso
       
       // Refresh the product list
       onProductUpdate();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error marking item as sold:", error);
-      alert("Failed to mark item as sold. Please try again.");
+      console.error("Response data:", error.response?.data);
+      alert(`Failed to mark item as sold: ${error.response?.data?.error || error.message}`);
     } finally {
       setLoadingStates(prev => ({ ...prev, [productId]: null }));
     }
@@ -71,9 +72,10 @@ export default function PersonalProductGrid({ products, onProductUpdate }: Perso
       
       // Refresh the product list
       onProductUpdate();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting item:", error);
-      alert("Failed to delete item. Please try again.");
+      console.error("Response data:", error.response?.data);
+      alert(`Failed to delete item: ${error.response?.data?.error || error.message}`);
     } finally {
       setLoadingStates(prev => ({ ...prev, [productId]: null }));
     }
