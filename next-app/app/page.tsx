@@ -106,7 +106,7 @@ export default async function Home() {
                     </Button>
                   </Link>
                   <Link href="/browse">
-                    <Button variant="outline" className="bg-blue-700/30 text-white border-white/30 hover:bg-blue-700/50 px-6 py-6 rounded-xl text-lg font-medium transform transition-all duration-300 hover:-translate-y-1">
+                    <Button className="bg-blue-700/30 text-white border-white/30 hover:bg-blue-700/50 px-6 py-6 rounded-xl text-lg font-medium transform transition-all duration-300 hover:-translate-y-1">
                       Browse items
                     </Button>
                   </Link>

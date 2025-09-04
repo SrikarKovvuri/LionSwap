@@ -1,3 +1,19 @@
-Dependency List:
-- npm install
+# LionSwap
+
+## Installation
+
+### Backend Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### Frontend Dependencies (Next.js App)
+```bash
+cd next-app
+npm install
+```
+
+**Note**: The project uses `.npmrc` with `legacy-peer-deps=true` to resolve compatibility issues between React 19 and some dependencies. This is already configured, so a regular `npm install` should work without issues.
+
+## Dependencies
 - lucide-react

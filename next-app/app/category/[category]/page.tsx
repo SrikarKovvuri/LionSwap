@@ -85,7 +85,7 @@ async function getCategoryListings(category: string): Promise<Product[]> {
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   // Get the category slug from params (nextjs async component fix)
-  const categorySlug = params.category;
+  const categorySlug = await params.category;
   
   // Get the display name for UI
   const displayName = getDisplayName(categorySlug);

@@ -3,6 +3,7 @@ import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ProductGrid from "@/components/product-grid"
+import PersonalProductGrid from "@/components/personal-product-grid"
 import OrderGrid from "@/components/order-grid"
 import axios from "axios"
 import { redirect } from "next/navigation"
@@ -20,6 +21,21 @@ export default function ProfilePage() {
   const [user, setUser] = useState<User>();
   const [products, setProducts] = useState<Product[]>([])
 
+  const fetchProducts = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("https://lionswap.onrender.com/listings/specific/user", {
+        headers: {
+            Authorization: `Bearer ${token}`, // token inherently has userId, no need to pass it in
+            "Content-Type": "application/json",
+        },
+        });
+        setProducts(response.data.listings);
+    } catch (err: any) {
+        console.log("getProducts(TypeScript) error", err.response?.data || err.message);
+    }
+  }
+
   useEffect(() => {
       async function fetchUser() {
           try {
@@ -35,20 +51,6 @@ export default function ProfilePage() {
               console.log("getUser(TypeScript) error", err.response?.data || err.message);
           }
       }
-      async function fetchProducts() {
-        try {
-            const token = localStorage.getItem("token");
-            const response = await axios.get("https://lionswap.onrender.com/listings/specific/user", {
-            headers: {
-                Authorization: `Bearer ${token}`, // token inherently has userId, no need to pass it in
-                "Content-Type": "application/json",
-            },
-            });
-            setProducts(response.data.listings);
-        } catch (err: any) {
-            console.log("getProducts(TypeScript) error", err.response?.data || err.message);
-        }
-    }
       
     fetchUser();
     fetchProducts();
@@ -118,7 +120,7 @@ export default function ProfilePage() {
 
             <TabsContent value="listings">
               {activeListings.length > 0 ? (
-                <ProductGrid products={activeListings} />
+                <PersonalProductGrid products={activeListings} onProductUpdate={fetchProducts} />
               ) : (
                 <div className="text-center py-12">
                   <p className="text-gray-500">No active listings</p>

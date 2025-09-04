@@ -269,6 +269,28 @@ def delete_listing(listing_id):
 
     return jsonify({"message": "Listing deleted"}), 200
 
+# mark a product listing as sold (owner-only)
+@market_ops.route('/listings/<int:listing_id>/mark-sold', methods=['PUT'])
+@jwt_required()
+def mark_listing_sold(listing_id):
+    seller_id = get_jwt_identity()
+    product = Product.query.get(listing_id)
+    if not product:
+        return jsonify({"error": "Listing not found"}), 404
+    if product.seller_id != seller_id:
+        return jsonify({"error": "Unauthorized access"}), 403
+
+    # Mark the product as sold (is_available = False)
+    product.is_available = False
+    
+    try:
+        db.session.commit()
+    except Exception as err:
+        db.session.rollback()
+        return jsonify({"error": "Database error: " + str(err)}), 500
+
+    return jsonify({"message": "Listing marked as sold"}), 200
+
 # Create a new order when a buyer purchases a product
 @market_ops.route('/orders', methods=['POST'])
 @jwt_required()
