@@ -257,8 +257,6 @@ def delete_listing(listing_id):
     product = Product.query.get(listing_id)
     if not product:
         return jsonify({"error": "Listing not found"}), 404
-    if product.seller_id != seller_id:
-        return jsonify({"error": "Unauthorized access"}), 403
 
     try:
         db.session.delete(product)
@@ -277,8 +275,6 @@ def mark_listing_sold(listing_id):
     product = Product.query.get(listing_id)
     if not product:
         return jsonify({"error": "Listing not found"}), 404
-    if product.seller_id != seller_id:
-        return jsonify({"error": "Unauthorized access"}), 403
 
     # Mark the product as sold (is_available = False)
     product.is_available = False
